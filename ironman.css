@@ -1,0 +1,44 @@
+.characterContainer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 700px;
+    margin: 0 auto;
+}
+
+.charDisplay {
+    padding: 5px;
+    text-align: center;
+}
+
+.charDisplay p {
+    margin-top: -1px;
+}
+
+.chapterNavButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 800px;
+    margin: 0 auto;
+}
+
+.chapterNavButtons button {
+    width: 50px;
+    font-size: 15px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.chapterDropdown {
+    text-align: center;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chapSelect {
+    width: 115px;
+    text-align: center;
+    margin: 0 auto;
+}
