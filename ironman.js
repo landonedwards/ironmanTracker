@@ -47,6 +47,10 @@ const characters = [
 const charContainer = document.querySelector(".characterContainer");
 const chapSelect = document.querySelector("#chapSelect");
 
+const navChapterButtons = document.querySelectorAll(".navChapter");
+const prevButton = document.querySelector("#prevButton");
+const nextButton = document.querySelector("#nextButton");
+
 function populateChapterDropdown() {
     // For Eliwood mode (which is the default; will implement others later.)
     for (let i = 11; i <= 31; i++) {
@@ -68,9 +72,34 @@ function filterCharactersByChapter() {
     if (chapSelected == "All" || chapSelected == "") {
         return characters;
     }
-
+    // get and return filtered characters
     const filteredChars = characters.filter(filterJoinChapter);
     return filteredChars;
+}
+
+function updateChapter(direction) {
+    // grab current chapter selection
+    let currentChapterIndex = chapSelect.selectedIndex;
+    let newChapterIndex;
+    
+    if (direction == "next") {
+        newChapterIndex = currentChapterIndex + 1;
+        // if on the last chapter, keep current selection
+        if (newChapterIndex >= chapSelect.options.length) {
+            newChapterIndex = currentChapterIndex;
+        }
+    }
+
+    if (direction == "prev") {
+        newChapterIndex = currentChapterIndex - 1;
+        // if on the first chapter, keep current selection
+        if (newChapterIndex < 0) {
+            newChapterIndex = currentChapterIndex;
+        }
+    }
+
+    // update current chapter selection based on whether it was the 'next' or 'prev' button
+    chapSelect.selectedIndex = newChapterIndex;
 }
 
 function displayCharacters(characters) {
@@ -103,5 +132,22 @@ chapSelect.addEventListener("change", () => {
     // Get filtered characters
     const filteredChars = filterCharactersByChapter();
     // Call displayCharacters with filtered list
+    displayCharacters(filteredChars);
+})
+
+prevButton.addEventListener("click", () => {
+    updateChapter("prev");
+
+    // clear current selection of characters and characters by chapter
+    charContainer.innerHTML = "";
+    const filteredChars = filterCharactersByChapter();
+    displayCharacters(filteredChars);
+})
+
+nextButton.addEventListener("click", () => {
+    updateChapter("next");
+
+    charContainer.innerHTML = "";
+    const filteredChars = filterCharactersByChapter();
     displayCharacters(filteredChars);
 })
