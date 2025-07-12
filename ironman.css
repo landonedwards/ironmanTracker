@@ -40,6 +40,7 @@
 .charDisplay {
     padding: 5px;
     text-align: center;
+    position: relative;
 }
 
 .charDisplay p {
@@ -80,4 +81,15 @@ h1 {
     width: 115px;
     text-align: center;
     margin: 0 auto;
+}
+
+.redXIcon {
+    display: none;
+}
+
+.charDisplay.dead .redXIcon{
+    display: block;
+    width: 96px;
+    position: absolute;
+    bottom: 30px;
 }
