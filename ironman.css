@@ -30,36 +30,67 @@
     --nav-hover-background-color: var(--primary-color);
   }
 
+body {
+    background-color: #f9efbd;
+}
+
 .characterContainer {
     display: flex;
     flex-wrap: wrap;
-    width: 700px;
+    width: 720px;
     margin: 0 auto;
+    background-image: url(images/misc/fe7-menu-background.png);
+    border: 5px solid #635939;
 }
 
 .charDisplay {
-    padding: 5px;
+    height: 105px;
+    padding: 3px;
     text-align: center;
     position: relative;
+    background-image: url(images/misc/char-display-background.jpeg);
+    background-size: contain;
+    border: 4px solid #635939;
 }
 
 .charDisplay p {
     margin-top: -1px;
 }
 
-.chapterNavButtons {
+.displayContainer {
+    margin: 5px;
+}
+
+.optionsContainer {
     display: flex;
     justify-content: space-between;
-    width: 800px;
+    align-items: center;
+    width: 250px;
     margin: 0 auto;
 }
 
-.chapterNavButtons button {
+.optionsContainer button {
     width: 50px;
-    font-size: 15px;
+    height: 25px;
+    font-size: 14px;
+    border-radius: 8px;
 }
 
-h1 {
+.optionsContainer button:hover {
+    background-color: #8c6931;
+    color: white;
+}
+
+.logoContainer {
+    display: flex;
+}
+
+.fe7Logo {
+    margin: 0 auto;
+    width: 300px;
+}
+
+/* h1, h2 {
     text-align: center;
     font-family: var(--heading-font);
     color: #f7b955;
@@ -69,6 +100,10 @@ h1 {
     2px -2px 0 #771012,
     -2px 2px 0 #771012;
 }
+
+h2 {
+    margin-top: -9px;
+} */
 
 .chapterDropdown {
     text-align: center;
@@ -87,9 +122,19 @@ h1 {
     display: none;
 }
 
+.charDisplay.dead {
+    filter: grayscale(100%);
+}
+
 .charDisplay.dead .redXIcon{
     display: block;
-    width: 96px;
+    width: 130px;
     position: absolute;
-    bottom: 30px;
+    bottom: -8px;
+    right: -12px;
+    opacity: 0.8;
+}
+
+footer {
+    text-align: center;
 }

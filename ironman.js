@@ -104,6 +104,10 @@ function updateChapter(direction) {
 
 function displayCharacters(characters) {
     characters.forEach(char => {
+    // container to add spacing between each display
+    const displayContainer = document.createElement("div");
+    displayContainer.classList.add("displayContainer");
+
     const unitDisplay = document.createElement("div");
     unitDisplay.classList.add("charDisplay");
 
@@ -120,7 +124,8 @@ function displayCharacters(characters) {
     name.textContent = char.charName;
 
     unitDisplay.append(portrait, bigX, name);
-    charContainer.append(unitDisplay);
+    displayContainer.append(unitDisplay);
+    charContainer.append(displayContainer);
 })
 }
 

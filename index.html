@@ -9,7 +9,7 @@
       name="description"
       content="This page will help you track your ironman runs in Fire Emblem 7."
     />
-    <link rel="icon" href="images/" />
+    <link rel="icon" href="images/misc/durandal.png" />
     <link rel="stylesheet" href="ironman.css" />
     <script src="ironman.js" defer></script>
   </head>
@@ -17,21 +17,32 @@
     <header></header>
 
     <main>
-      <h1>FIRE EMBLEM 7</h1>
+      <div class="logoContainer">
+        <img
+          src="images/misc/fe7-transparent-logo.png"
+          alt="Fire Emblem 7 Logo"
+          class="fe7Logo"
+        />
+      </div>
 
-      <div class="chapterDropdown">
-        <label for="chapSelect">Select a chapter:</label>
-        <select id="chapSelect" name="chapSelect">
-          <option value="">All</option>
-        </select>
+      <!-- this div is just to center the options container-->
+      <div>
+      <div class="optionsContainer">
+        <button class="navChapter" id="prevButton">Prev</button>
+
+        <div class="chapterDropdown">
+          <label for="chapSelect">Select a chapter:</label>
+          <select id="chapSelect" name="chapSelect">
+            <option value="">All</option>
+          </select>
+        </div>
+
+        <button class="navChapter" id="nextButton">Next</button>
+
+      </div>
       </div>
 
       <div class="characterContainer"></div>
-
-      <div class="chapterNavButtons">
-        <button class="navChapter" id="prevButton">Prev</button>
-        <button class="navChapter" id="nextButton">Next</button>
-      </div>
     </main>
 
     <footer>
