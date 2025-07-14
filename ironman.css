@@ -90,7 +90,7 @@ body {
     width: 300px;
 }
 
-/* h1, h2 {
+h1, h2 {
     text-align: center;
     font-family: var(--heading-font);
     color: #f7b955;
@@ -101,6 +101,38 @@ body {
     -2px 2px 0 #771012;
 }
 
+.sectionSpacingDiv {
+    width: 200px;
+}
+
+.trackerSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.lordLiveReactionContainer {
+    display: flex;
+    flex-direction: column;
+    margin-right: 5%;
+    border: 1px solid black;
+    background-color: whitesmoke;
+}
+
+.lordLiveReactionContainer img {
+    width: 125px;
+}
+
+.lordReactionImg {
+    width: 200px;
+    height: 30px;
+}
+
+.mainContentContainer {
+    padding: 5px;
+}
+
+/* 
 h2 {
     margin-top: -9px;
 } */

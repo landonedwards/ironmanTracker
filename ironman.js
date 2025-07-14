@@ -44,12 +44,35 @@ const characters = [
     { id: 43, charName: "Athos", HP: 0, Str: 0, Mag: 0, Dex: 0, Spd: 0, Lck: 0, Def: 0, Res: 0, image: "images/char-sprite/athos.png", joinChapter: 31 }
 ];
 
+// variable declarations 
+
+// key for storing dead characters in localStorage
+const LOCAL_STORAGE_KEY = "deadCharacterIds";
+let deadCharacterIdSet = new Set();
+
 const charContainer = document.querySelector(".characterContainer");
 const chapSelect = document.querySelector("#chapSelect");
 
 const navChapterButtons = document.querySelectorAll(".navChapter");
 const prevButton = document.querySelector("#prevButton");
 const nextButton = document.querySelector("#nextButton");
+
+function loadDeadCharactersFromStorage() {
+    // grab the array of dead character IDs saved in local storage
+    const deadCharIdString = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+    // if there was a string saved in local storage, convert it to an array object
+    if (deadCharIdString) {
+        const deadCharIdArray = JSON.parse(deadCharIdString);
+        // convert the array to a set and set the global variable's value to it
+        deadCharacterIdSet = new Set(deadCharIdArray);
+    }
+}
+
+function saveDeadCharactersToStorage(deadCharacters) {
+    // save all dead characters iin string format in localStorage
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(deadCharacters));
+}
 
 function populateChapterDropdown() {
     // For Eliwood mode (which is the default; will implement others later.)
@@ -59,6 +82,8 @@ function populateChapterDropdown() {
         chapterNum.textContent = `Chapter ${i}`;
         chapSelect.append(chapterNum);
     }
+
+    chapSelect.selectedIndex = 1;
 }
 
 // filter helper function
@@ -104,44 +129,63 @@ function updateChapter(direction) {
 
 function displayCharacters(characters) {
     characters.forEach(char => {
-    // container to add spacing between each display
-    const displayContainer = document.createElement("div");
-    displayContainer.classList.add("displayContainer");
+        // container to add spacing between each display
+        const displayContainer = document.createElement("div");
+        displayContainer.classList.add("displayContainer");
 
-    const unitDisplay = document.createElement("div");
-    unitDisplay.classList.add("charDisplay");
+        const unitDisplay = document.createElement("div");
+        unitDisplay.classList.add("charDisplay");
+        // assign the id of the character object to a custom attribute on the div for future reference
+        unitDisplay.dataset.charId = char.id;
 
-    const portrait = document.createElement("img");
-    portrait.src = char.image;
-    portrait.alt = char.charName;
+        // convert character ID to string because IDs were converted to strings in local storage
+        if (deadCharacterIdSet.has(char.id.toString())) {
+            unitDisplay.classList.add("dead");
+        }
 
-    const bigX = document.createElement("img");
-    bigX.src = "images/misc/redX.png";
-    bigX.alt = "Big red X";
-    bigX.classList.add("redXIcon");
+        const portrait = document.createElement("img");
+        portrait.src = char.image;
+        portrait.alt = char.charName;
 
-    const name = document.createElement("p");
-    name.textContent = char.charName;
+        const bigX = document.createElement("img");
+        bigX.src = "images/misc/redX.png";
+        bigX.alt = "Big red X";
+        bigX.classList.add("redXIcon");
 
-    unitDisplay.append(portrait, bigX, name);
-    displayContainer.append(unitDisplay);
-    charContainer.append(displayContainer);
+        const name = document.createElement("p");
+        name.textContent = char.charName;
+
+        unitDisplay.append(portrait, bigX, name);
+        displayContainer.append(unitDisplay);
+        charContainer.append(displayContainer);
 })
 }
 
 function toggleCharacterStatus(character) {
+    // grabs unique attribute on unitDisplay div
+    const charId = character.dataset.charId;
+
     if (character.classList.contains("dead")) {
         character.classList.remove("dead");
+        // remove character's id from set
+        deadCharacterIdSet.delete(charId);
     }
     else {
         character.classList.add("dead");
+        // add character's id to set
+        deadCharacterIdSet.add(charId);
     }
+
+    // convert set to an array and save characters to local storage
+    saveDeadCharactersToStorage(Array.from(deadCharacterIdSet));
 }
 
-// All function calls
+// All initial function calls
 
 populateChapterDropdown();
-displayCharacters(characters);
+loadDeadCharactersFromStorage();
+filteredChars = filterCharactersByChapter();
+displayCharacters(filteredChars);
 
 // event listeners
 

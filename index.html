@@ -14,9 +14,7 @@
     <script src="ironman.js" defer></script>
   </head>
   <body>
-    <header></header>
-
-    <main>
+    <header>
       <div class="logoContainer">
         <img
           src="images/misc/fe7-transparent-logo.png"
@@ -24,25 +22,46 @@
           class="fe7Logo"
         />
       </div>
+    </header>
 
-      <!-- this div is just to center the options container-->
-      <div>
-      <div class="optionsContainer">
-        <button class="navChapter" id="prevButton">Prev</button>
+    <main>
+      <div class="mainContentContainer">
+        <div class="trackerSection">
+          <!--this is just for spacing-->
+          <div class="sectionSpacingDiv"></div>
 
-        <div class="chapterDropdown">
-          <label for="chapSelect">Select a chapter:</label>
-          <select id="chapSelect" name="chapSelect">
-            <option value="">All</option>
-          </select>
+          <div class="h1Container">
+            <h1>Ironman Tracker</h1>
+          </div>
+
+          <!--Remove these images to dynamically add them based on what mode user is playing-->
+          <div class="lordLiveReactionContainer">
+            <img
+              src="images/live-reaction/live-eliwood-banner.png"
+              class="lordReactionImg"
+            />
+            <img src="images/live-reaction/sad-eliwood.png" />
+          </div>
         </div>
 
-        <button class="navChapter" id="nextButton">Next</button>
+        <!-- this div is just to center the options container-->
+        <div>
+          <div class="optionsContainer">
+            <button class="navChapter" id="prevButton">Prev</button>
 
-      </div>
-      </div>
+            <div class="chapterDropdown">
+              <label for="chapSelect">Select a chapter:</label>
+              <select id="chapSelect" name="chapSelect">
+                <option value="">All</option>
+              </select>
+            </div>
 
-      <div class="characterContainer"></div>
+            <button class="navChapter" id="nextButton">Next</button>
+          </div>
+        </div>
+
+        <div class="characterContainer"></div>
+      </div>
     </main>
 
     <footer>
