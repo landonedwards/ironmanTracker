@@ -26,6 +26,7 @@ const characters = [
     { id: 25, charName: "Dart", HP: 70, Str: 65, Mag: 0, Dex: 20, Spd: 60, Lck: 35, Def: 20, Res: 15, image: "images/char-sprite/dart.png", joinChapter: 18 },
     { id: 26, charName: "Fiora", HP: 70, Str: 35, Mag: 0, Dex: 60, Spd: 50, Lck: 30, Def: 20, Res: 50, image: "images/char-sprite/fiora.png", joinChapter: 18 },
     { id: 27, charName: "Legault", HP: 60, Str: 25, Mag: 0, Dex: 45, Spd: 60, Lck: 60, Def: 25, Res: 25, image: "images/char-sprite/legault.png", joinChapter: 19 },
+    // Add nils for the chapters he's in and then swap back to ninian
     { id: 28, charName: "Ninian", HP: 85, Str: 5, Mag: 0, Dex: 5, Spd: 70, Lck: 80, Def: 30, Res: 70, image: "images/char-sprite/ninian.png", joinChapter: 20 },
     { id: 29, charName: "Isadora", HP: 75, Str: 30, Mag: 0, Dex: 35, Spd: 50, Lck: 45, Def: 20, Res: 25, image: "images/char-sprite/isadora.png", joinChapter: 21 },
     { id: 30, charName: "Heath", HP: 80, Str: 50, Mag: 0, Dex: 50, Spd: 45, Lck: 20, Def: 30, Res: 20, image: "images/char-sprite/heath.png", joinChapter: 21 },

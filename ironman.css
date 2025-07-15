@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Press+Start+2P&display=swap');
 
 :root {
     /* change the values below to your colors from your palette */
@@ -12,6 +12,7 @@
   
     /* change the values below to your chosen font(s) */
     --heading-font: "Passion One", sans-serif;
+    --gba-font: "Press Start 2P", sans-serif;
     --paragraph-font: ;
   
     /* these colors below should be chosen from among your palette colors above */
@@ -54,7 +55,9 @@ body {
 }
 
 .charDisplay p {
-    margin-top: -1px;
+    margin-top: 5px;
+    font-size: 8px;
+    font-family: var(--gba-font);
 }
 
 .displayContainer {
@@ -65,15 +68,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 250px;
+    width: 480px;
     margin: 0 auto;
+    margin-bottom: 10px;
 }
 
 .optionsContainer button {
-    width: 50px;
-    height: 25px;
-    font-size: 14px;
-    border-radius: 8px;
+    width: 100px;
+    height: 30px;
+    border-radius: 9px;
+    font-family: var(--gba-font);
+    font-size: 10px;
 }
 
 .optionsContainer button:hover {
@@ -99,6 +104,10 @@ h1, h2 {
     -2px -2px 0 #771012,
     2px -2px 0 #771012,
     -2px 2px 0 #771012;
+}
+
+h1 {
+    font-size: 40px;
 }
 
 .sectionSpacingDiv {
@@ -144,10 +153,18 @@ h2 {
     flex-direction: column;
 }
 
+.chapterDropdown label {
+    font-family: var(--gba-font);
+    font-size: 11px;
+    margin-bottom: 5px;
+    width: 210px;
+}
+
 #chapSelect {
-    width: 115px;
+    width: 200px;
     text-align: center;
     margin: 0 auto;
+    font-size: 15px;
 }
 
 .redXIcon {
