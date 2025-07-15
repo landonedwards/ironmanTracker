@@ -184,6 +184,37 @@ h2 {
     opacity: 0.8;
 }
 
+/* death modal styling here
+
+/* .deathModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    padding: 20px;
+}
+
+.modalContent {
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    background-color: whitesmoke;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.closeButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+} */
+
 footer {
     text-align: center;
 }

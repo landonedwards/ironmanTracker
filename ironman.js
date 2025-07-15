@@ -54,6 +54,8 @@ let deadCharacterIdSet = new Set();
 const charContainer = document.querySelector(".characterContainer");
 const chapSelect = document.querySelector("#chapSelect");
 
+let currentChapter = chapSelect.value;
+
 const navChapterButtons = document.querySelectorAll(".navChapter");
 const prevButton = document.querySelector("#prevButton");
 const nextButton = document.querySelector("#nextButton");
@@ -126,6 +128,8 @@ function updateChapter(direction) {
 
     // update current chapter selection based on whether it was the 'next' or 'prev' button
     chapSelect.selectedIndex = newChapterIndex;
+    // grabs the value of the chapter at the new index
+    currentChapter = chapSelect.options[newChapterIndex].value;
 }
 
 function displayCharacters(characters) {
@@ -179,6 +183,12 @@ function toggleCharacterStatus(character) {
 
     // convert set to an array and save characters to local storage
     saveDeadCharactersToStorage(Array.from(deadCharacterIdSet));
+}
+
+function generateDeathConfirmationModal() {
+    return `
+    
+    `;
 }
 
 // All initial function calls
