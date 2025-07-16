@@ -73,7 +73,7 @@ function loadDeadCharactersFromStorage() {
 }
 
 function saveDeadCharactersToStorage(deadCharacters) {
-    // save all dead characters iin string format in localStorage
+    // save all dead characters in string format in localStorage
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(deadCharacters));
 }
 
@@ -128,7 +128,7 @@ function updateChapter(direction) {
 
     // update current chapter selection based on whether it was the 'next' or 'prev' button
     chapSelect.selectedIndex = newChapterIndex;
-    // grabs the value of the chapter at the new index
+    // updates the stored chapter value with the one at the new index
     currentChapter = chapSelect.options[newChapterIndex].value;
 }
 
@@ -185,10 +185,102 @@ function toggleCharacterStatus(character) {
     saveDeadCharactersToStorage(Array.from(deadCharacterIdSet));
 }
 
-function generateDeathConfirmationModal() {
+function generateDeathConfirmationModal(characterName, chapter) {
+    // creates the html for a modal to confirm if the character died
     return `
-    
+      <div class="deathModal">
+        <div class="modalContent">
+          <div class="closeButtonContainer">
+            <button class="closeButton">X</button>
+          </div>
+
+          <div class="modalDetailsContainer">
+            <div class="modalDetails">
+                <p><span class="deathModalSpecialText">${chapter}</span></p>
+                <div class="characterModalInfo">
+                <div class="portraitContainer">
+                    <img src="images/char-sprite/${characterName}.png">
+                </div>
+                <p>Did <span class="deathModalSpecialText">${characterName}</span> fall in battle?</p>
+                </div>
+            </div>
+
+            <div class="deathConfirmationContainer">
+                <button id="yesButton">Yes</button>
+                <button id="noButton">No</button>
+            </div>
+            </div>
+          </div
+
+          <div class="deathNoteSection hidden"> 
+            <p>How did <span class="deathModalSpecialText">${characterName}</span> meet their end? (Optional)</p>
+            <textarea id="deathNoteInput" rows="6" placeholder="Crit by a sniper ambush spawn..."></textarea>
+            <div class="noteOptionsContainer">
+              <button id="saveNoteButton">Save</button>
+              <button id="cancelNoteButton">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
     `;
+}
+
+function modalHandler(characterDisplayElement) {
+    // grab unique attribute on character display
+    const charDisplayId = characterDisplayElement.dataset.charId;
+    let character;
+
+    // grab the first character object that has the ID
+    character = characters.find(c => c.id == charDisplayId);
+
+    // if no character object is found, prevent the modal from opening.
+    if (!character) {
+        return;
+    }
+
+    // grab the character's name
+    const characterName = character.charName;
+    // display the modal
+    document.body.insertAdjacentHTML("beforeend", generateDeathConfirmationModal(characterName))
+
+    const yesButton = document.querySelector("#yesButton");
+    const noButton = document.querySelector("#noButton");
+    const closeButton = document.querySelector(".closeButton");
+
+    // if yes is clicked, move on to prompting for death note
+    yesButton.addEventListener("click", promptForDeathNote);
+    // otherwise, close the modal
+    noButton.addEventListener("click", closeDeathModal);
+    closeButton.addEventListener("click", closeDeathModal);
+}
+
+function promptForDeathNote() {
+    // grab and remove the death confirmation text
+    const modalDetails = document.querySelector(".modalDetailsContainer");
+    modalDetails.remove();
+
+    const deathNoteSection = document.querySelector(".deathNoteSection");
+    // show the death note prompt and input box
+    deathNoteSection.classList.remove("hidden");
+
+    const deathNoteInput = document.querySelector("#deathNoteInput");
+    const saveButton = document.querySelector("#saveNoteButton");
+    const cancelButton = document.querySelector("#cancelNoteButton");
+
+    saveButton.addEventListener("click", () => {
+
+    })
+    cancelButton.addEventListener("click", closeDeathModal)
+}
+
+function closeDeathModal() {
+    const deathModal = document.querySelector(".deathModal");
+    deathModal.remove();
+}
+
+function saveDeathNote(character, chapter) {
+    
 }
 
 // All initial function calls

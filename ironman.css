@@ -35,11 +35,40 @@ body {
     background-color: #f9efbd;
 }
 
+.mainNav {
+    margin: 0 auto;
+    text-align: center;
+    background-color: #6a6350;
+    display: flex;
+    justify-content: end;
+    list-style: none;
+    padding: 5px;
+}
+
+.mainNav li {
+    margin: 8px;
+    font-size: 1.2em;
+}
+
+.mainNav a {
+    color: whitesmoke; 
+    text-decoration: none;
+    padding: 17px 5px 17px 5px;
+    font-size: 0.6em;
+    font-family: var(--gba-font);
+}
+
+.mainNav a:hover {
+    background-color: #3a3522;
+    color: #f7eea3;
+}
+
 .characterContainer {
     display: flex;
     flex-wrap: wrap;
     width: 720px;
     margin: 0 auto;
+    margin-bottom: 60px;
     background-image: url(images/misc/fe7-menu-background.png);
     border: 5px solid #635939;
 }
@@ -92,10 +121,11 @@ body {
 
 .fe7Logo {
     margin: 0 auto;
+    margin-top: 20px;
     width: 300px;
 }
 
-h1, h2 {
+h1 {
     text-align: center;
     font-family: var(--heading-font);
     color: #f7b955;
@@ -104,10 +134,8 @@ h1, h2 {
     -2px -2px 0 #771012,
     2px -2px 0 #771012,
     -2px 2px 0 #771012;
-}
-
-h1 {
     font-size: 40px;
+    
 }
 
 .sectionSpacingDiv {
@@ -184,9 +212,7 @@ h2 {
     opacity: 0.8;
 }
 
-/* death modal styling here
-
-/* .deathModal {
+.deathModal {
     position: fixed;
     top: 0;
     left: 0;
@@ -201,20 +227,82 @@ h2 {
 }
 
 .modalContent {
-    max-width: 90%;
-    max-height: 90%;
+    width: 380px;
+    height: 210px;
+    background-color: #042e8f;
+    color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: inset 0px 0px 12px 7px rgba(0, 0, 0, 0.9);
+}
+
+.modalDetails {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    margin-top: -20px;
+}
+
+.characterModalInfo {
+    display: flex;
+    align-items: center;
+}
+
+.portraitContainer {
+    display: flex;
     background-color: whitesmoke;
-    padding: 10px;
-    margin: 0 auto;
+    height: 90px;
+    border: 3px solid black;
+    margin: 10px 30px 10px 10px;
+}
+
+.deathModalSpecialText {
+    color: #fee073;
+}
+
+.deathConfirmationContainer {
+    display: flex;
+    justify-content: center;
+    margin: 15px;
+}
+
+.deathConfirmationContainer button, .noteOptionsContainer button {
+    width: 80px;
+    margin: 15px 5px 5px 5px;
+}
+
+#yesButton:hover {
+    background-color: rgb(9, 86, 9);
+    color: white;
+}
+
+#noButton:hover {
+    background-color: rgb(142, 17, 17);
+    color: white;
 }
 
 .closeButtonContainer {
     display: flex;
     justify-content: flex-end;
-} */
+}
+
+.hidden {
+    display: none;
+}
+
+.deathNoteSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.noteOptionsContainer {
+    display: flex;
+    justify-content: center;
+}
 
 footer {
     text-align: center;
+    background-color: #6a6350;
+    height: 47px;
+    color: whitesmoke;
 }
