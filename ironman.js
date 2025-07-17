@@ -252,7 +252,7 @@ function modalHandler(characterDisplayElement) {
     }
 
     // grab the character's name
-    const characterName = characterForModal.charName;
+    const characterName = characterForModal.charName.toLowerCase();
     // display the modal
     document.body.insertAdjacentHTML("beforeend", generateDeathConfirmationModal(characterName, currentChapter));
 
