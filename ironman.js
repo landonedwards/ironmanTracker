@@ -322,10 +322,31 @@ function gameOverModalHTML() {
     `
 }
 
+function resetGameData() {
+    // reset each character's status back to initial values
+    characters.forEach(char => {
+        char.status = "alive";
+        char.deathChapter = null;
+        char.deathNote = null;
+    });
+
+    // reset global chapter variable
+    currentChapter = chapSelect.options[1].value;
+    // set initial chapter to the first chapter of chosen mode
+    chapSelect.selectedIndex = 1;
+    // save reset game data to local storage (character status and current chapter)
+    saveGameDataToStorage();
+
+    // clear character container
+    charContainer.innerHTML = "";
+    filteredChars = filterCharactersByChapter();
+    // reset character display 
+    displayCharacters(filteredChars);
+}
+
 // FUNCTION TO DISPLAY GAMEOVER MODAL (WHEN LORD DIES)
 
 // All initial function calls
-
 populateChapterDropdown();
 loadGameDataFromStorage();
 filteredChars = filterCharactersByChapter();
