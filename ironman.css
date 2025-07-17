@@ -146,6 +146,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    margin-top: -15px;
 }
 
 .lordLiveReactionContainer {
@@ -168,11 +169,6 @@ h1 {
 .mainContentContainer {
     padding: 5px;
 }
-
-/* 
-h2 {
-    margin-top: -9px;
-} */
 
 .chapterDropdown {
     text-align: center;
@@ -228,7 +224,7 @@ h2 {
 
 .modalContent {
     width: 380px;
-    height: 210px;
+    min-height: 210px;
     background-color: #042e8f;
     color: white;
     padding: 20px;
@@ -260,6 +256,14 @@ h2 {
     color: #fee073;
 }
 
+.deathModalSpecialText.chapterText {
+    font-size: 20px;
+}
+
+.modalDetails {
+    font-size: 17px;
+}
+
 .deathConfirmationContainer {
     display: flex;
     justify-content: center;
@@ -271,14 +275,30 @@ h2 {
     margin: 15px 5px 5px 5px;
 }
 
-#yesButton:hover {
-    background-color: rgb(9, 86, 9);
+.deathNoteSection p {
+    font-size: 17px;
+}
+
+textarea {
+    font-size: 14px;
+}
+
+#yesButton {
+    background-color: rgb(142, 17, 17);
     color: white;
 }
 
-#noButton:hover {
-    background-color: rgb(142, 17, 17);
+#yesButton:hover {
+    background-color: rgb(208, 111, 111);
+}
+
+#saveNoteButton {
+    background-color: green;
     color: white;
+}
+
+#saveNoteButton:hover {
+    background-color: rgb(104, 173, 104);
 }
 
 .closeButtonContainer {
@@ -286,13 +306,13 @@ h2 {
     justify-content: flex-end;
 }
 
-.hidden {
-    display: none;
-}
-
 .deathNoteSection {
     display: flex;
     flex-direction: column;
+}
+
+.hidden {
+    display: none;
 }
 
 .noteOptionsContainer {
@@ -301,8 +321,15 @@ h2 {
 }
 
 footer {
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #6a6350;
     height: 47px;
     color: whitesmoke;
+}
+
+footer p {
+    font-family: var(--gba-font);
+    font-size: 0.6em;
 }
