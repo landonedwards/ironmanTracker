@@ -211,7 +211,7 @@ function generateDeathConfirmationModal(characterName, chapter) {
               <p><span class="deathModalSpecialText chapterText">Chapter ${chapter}</span></p>
               <div class="characterModalInfo">
                 <div class="portraitContainer">
-                  <img src="images/char-sprite/${characterName}.png">
+                  <img src="images/char-sprite/${characterName.toLowerCase()}.png">
                 </div>
                 <p>Did <span class="deathModalSpecialText">${characterName}</span> fall in battle?</p>
               </div>
@@ -252,7 +252,7 @@ function modalHandler(characterDisplayElement) {
     }
 
     // grab the character's name
-    const characterName = characterForModal.charName.toLowerCase();
+    const characterName = characterForModal.charName;
     // display the modal
     document.body.insertAdjacentHTML("beforeend", generateDeathConfirmationModal(characterName, currentChapter));
 
