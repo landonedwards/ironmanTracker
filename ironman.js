@@ -254,7 +254,7 @@ function modalHandler(characterDisplayElement) {
     // grab the character's name
     const characterName = characterForModal.charName;
     // display the modal
-    document.body.insertAdjacentHTML("beforeend", generateDeathConfirmationModal(characterName, currentChapter))
+    document.body.insertAdjacentHTML("beforeend", generateDeathConfirmationModal(characterName, currentChapter));
 
     const yesButton = document.querySelector("#yesButton");
     const noButton = document.querySelector("#noButton");
