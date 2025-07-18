@@ -320,6 +320,32 @@ textarea {
     justify-content: center;
 }
 
+/* Game Select page styling*/
+
+.gameSelectContainer {
+    display: flex;
+    justify-content: center;
+    width: 40%;
+    background-image: url(images/misc/game-shelf-background.png);
+}
+
+.shelfContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.shelfImg {
+    height: 249px;
+    object-fit: cover;
+}
+
+.gameCover {
+    width: 150px;
+    padding: 10px;
+}
+
+/* universal footer */
+
 footer {
     display: flex;
     justify-content: center;

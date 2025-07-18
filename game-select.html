@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Title Page Ironman Tracker</title>
+    <title>Ironman Game Select</title>
     <meta name="author" content="Landon Edwards" />
     <meta
       name="description"
@@ -14,15 +14,37 @@
     <script src="ironman.js" defer></script>
   </head>
   <body>
-    <header></header>
+    <header>
+      <nav>
+        <ul class="mainNav">
+          <li><a href="index.html">Ironman Tracker</a></li>
+          <li><a href="graveyard.html">Graveyard</a></li>
+          <li><a href="report.html">Report</a></li>
+          <li><a href="game-select.html">Game Select</a></li>
+        </ul>
+      </nav>
+    </header>
     <main>
-        <h1>Fire Emblem Ironman Tracker</h1>
+        <h1>Game Select</h1>
+
+        <div class="shelfContainer">
+          <img class="shelfImg" src="images/misc/game-shelf-full.png" alt="Wooden Shelf">
+          <div class="gameSelectContainer">
+            <img class="gameCover" src="images/misc/fe6-cover.png" alt="Fire Emblem 6 Cover">
+            <img class="gameCover" src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
+            <img class="gameCover" src="images/misc/fe8-cover.png" alt="Fire Emblem 8 Cover">
+          </div>
+        </div>
 
         <button>Start</button>
         <button>Load</button>
+        <button class="resetGameButton">Reset Game</button>
         
       </div>
     </main>
-    <footer></footer>
+
+    <footer>
+      <p>2025 | Landon Edwards</p>
+    </footer>
   </body>
 </html>
