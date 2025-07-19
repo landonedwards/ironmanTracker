@@ -33,6 +33,7 @@
 
 body {
     background-color: #f9efbd;
+    min-height: 729px;
 }
 
 .mainNav {
@@ -322,26 +323,61 @@ textarea {
 
 /* Game Select page styling*/
 
-.gameSelectContainer {
+.gameSelectButtonsContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 40px;
+}
+
+.gameSelectButtonsContainer button {
+    width: 200px;
+    border-radius: 15px;
+    font-size: 18px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.shelfContainerContainer {
     display: flex;
     justify-content: center;
-    width: 40%;
-    background-image: url(images/misc/game-shelf-background.png);
+}
+
+.gameSelectContainer {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    width: 70%;
+    margin-top: 63px;
 }
 
 .shelfContainer {
     display: flex;
     justify-content: center;
+    position: relative;
+    width: 55%;
+    height: 228px;
+    overflow: hidden;
 }
 
 .shelfImg {
-    height: 249px;
+    width: 100%;
+    object-position: top;
     object-fit: cover;
+    position: absolute;
 }
 
 .gameCover {
     width: 150px;
-    padding: 10px;
+    z-index: 10;
+}
+
+.gameSelectTitle {
+    padding: 25px;
+}
+
+.gameSelectFooter {
+    margin-top: 50px;
 }
 
 /* universal footer */
@@ -353,6 +389,7 @@ footer {
     background-color: #6a6350;
     height: 47px;
     color: whitesmoke;
+    margin-top: 20px;
 }
 
 footer p {

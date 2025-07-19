@@ -11,7 +11,7 @@
     />
     <link rel="icon" href="images/" />
     <link rel="stylesheet" href="ironman.css" />
-    <script src="ironman.js" defer></script>
+    <script src="gameselect.js" defer></script>
   </head>
   <body>
     <header>
@@ -25,25 +25,45 @@
       </nav>
     </header>
     <main>
-        <h1>Game Select</h1>
+      <h1 class="gameSelectTitle">Game Select</h1>
 
+      <div class="gameSelectButtonsContainer">
+          <button class="playButton">Play</button>
+          <button class="resetGameButton">Reset Game</button>
+      </div>
+
+      <div class="shelfContainerContainer">
         <div class="shelfContainer">
-          <img class="shelfImg" src="images/misc/game-shelf-full.png" alt="Wooden Shelf">
+          <img
+            class="shelfImg"
+            src="images/misc/game-shelf-full.png"
+            alt="Wooden Shelf"
+          />
           <div class="gameSelectContainer">
-            <img class="gameCover" src="images/misc/fe6-cover.png" alt="Fire Emblem 6 Cover">
-            <img class="gameCover" src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
-            <img class="gameCover" src="images/misc/fe8-cover.png" alt="Fire Emblem 8 Cover">
+            <img
+              class="gameCover"
+              id="bindingCover"
+              src="images/misc/fe6-cover.png"
+              alt="Fire Emblem 6 Cover"
+            />
+            <img
+              class="gameCover"
+              id="blazingCover"
+              src="images/misc/fe7-cover.png"
+              alt="Fire Emblem 7 Cover"
+            />
+            <img
+              class="gameCover"
+              id="sacredCover"
+              src="images/misc/fe8-cover.png"
+              alt="Fire Emblem 8 Cover"
+            />
           </div>
         </div>
-
-        <button>Start</button>
-        <button>Load</button>
-        <button class="resetGameButton">Reset Game</button>
-        
       </div>
     </main>
 
-    <footer>
+    <footer class="gameSelectFooter">
       <p>2025 | Landon Edwards</p>
     </footer>
   </body>

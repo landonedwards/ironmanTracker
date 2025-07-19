@@ -45,9 +45,107 @@
         { "id": 43, "charName": "Athos", "HP": 0, "Str": 0, "Mag": 0, "Dex": 0, "Spd": 0, "Lck": 0, "Def": 0, "Res": 0, "image": "images/char-sprite/athos.png", "joinChapter": 31, "status": "alive", "deathChapter": null, "deathNote": null }
     ],
 
-    "characterModes": [
-        {"id": 1, "name": "Lyn Mode", "startChapter": 1, "endChapter": 10 },
-        {"id": 2, "name": "Eliwood Mode", "startChapter": 11, "endChapter": 31 },
-        {"id": 3, "name": "Hector Mode", "startChapter": 11, "endChapter": 33 }
+    "gameModes": [
+        {"id": 1,
+         "name": "Lyn's Story",
+          "startChapter": 1,
+           "endChapter": 10,
+            "chapters":[
+                {"number": 0, "name": "Prologue: A Girl from the Plains" },
+                {"number": 1, "name": "Footsteps of Fate" },
+                {"number": 2, "name": "Sword of Spirits" },
+                {"number": 3, "name": "Band of Mercenaries" },
+                {"number": 4, "name": "In Occupation's Shadow" },
+                {"number": 5, "name": "Beyond the Borders" },
+                {"number": 6, "name": "Blood of Pride" },
+                {"number": 7, "name": "Siblings Abroad" },
+                {"number": "7x", "name": "The Black Shadow" },
+                {"number": 8, "name": "Vortex of Strategy" },
+                {"number": 9, "name": "A Grim Reunion" },
+                {"number": 10, "name": "The Distant Plains" }
+            ],
+            "charactersInMode": [
+
+            ]
+        },
+        {"id": 2,
+         "name": "Eliwood's Story",
+          "startChapter": 11,
+           "endChapter": 31,
+           "chapters": [
+
+           ],
+           "charactersInMode": [
+
+           ]
+        },
+        {"id": 3,
+         "name": "Hector's Story",
+          "startChapter": 11,
+           "endChapter": 33,
+            "chapters": [
+
+            ],
+            "charactersInMode": [
+
+            ]
+        }
+    ],
+
+    "chapters": [
+        {"id": 11, "name": "Taking Leave", "mode": "Eliwood Mode"},
+        {"id": 11, "name": "Another Journey", "mode": "Hector Mode"},
+        {"id": 12, "name": "Birds of a Feather", "mode": ["Eliwood Mode", "Hector Mode"]},
+        {"id": 13, "name": "In Search of Truth", "mode": ["Eliwood Mode", "Hector Mode"]},
+        {"id": "13x", "name": "The Peddler Merlinus", "mode": ["Eliwood Mode", "Hector Mode"]},
+        {"id": 14, "name": "False Friends", "mode": ["Eliwood Mode", "Hector Mode"]},
+        {"id": 15, "name": "Noble Lady of Caelin", "mode": "Eliwood Mode"},
+        {"id": 15, "name": "Talons Alight", "mode": "Hector Mode"},
+        {"id": 16, "name": "Whereabouts Unknown", "mode": "Eliwood Mode"},
+        {"id": 16, "name": "Noble Lady of Caelin", "mode": "Hector Mode"},
+        {"id": "16x", "name": "The Port of Badon", "mode": "Eliwood Mode"},
+        {"id": 17, "name": "Pirate Ship", "mode": "Eliwood Mode"},
+        {"id": 17, "name": "Whereabouts Unknown", "mode": "Hector Mode"},
+        {"id": "17x", "name": "The Port of Badon", "mode": "Hector Mode"},
+        {"id": 18, "name": "The Dread Isle", "mode": "Eliwood Mode"},
+        {"id": 18, "name": "Pirate Ship", "mode": "Hector Mode"},
+        {"id": "18x", "name": "Imprisoner of Magic", "mode": "Eliwood Mode"},
+        {"id": 19, "name": "Dragon's Gate", "mode": "Eliwood Mode"},
+        {"id": 19, "name": "The Dread Isle", "mode": "Hector Mode"},
+        {"id": "19x", "name": "Imprisoner of Magic", "mode": "Hector Mode"},
+        {"id": "19xx", "name": "A Glimpse in Time", "mode": "Hector Mode"},
+        {"id": 20, "name": "New Resolve", "mode": "Eliwood Mode"},
+        {"id": 20, "name": "Dragon's Gate", "mode": "Hector Mode"},
+        {"id": 21, "name": "Kinship's Bond", "mode": "Eliwood Mode"},
+        {"id": 21, "name": "New Resolve", "mode": "Hector Mode"},
+        {"id": 22, "name": "Living Legend", "mode": "Eliwood Mode"},
+        {"id": 22, "name": "Kinship's Bond", "mode": "Hector Mode"},
+        {"id": "22x", "name": "Genesis", "mode": "Eliwood Mode"},
+        {"id": 23, "name": "Four-Fanged Offense", "mode": "Eliwood Mode"},
+        {"id": 23, "name": "Living Legend", "mode": "Hector Mode"},
+        {"id": "23x", "name": "Genesis", "mode": "Hector Mode"},
+        {"id": 24, "name": "Unfulfilled Heart", "mode": "Eliwood Mode"},
+        {"id": 24, "name": "Four-Fanged Offense", "mode": "Hector Mode"},
+        {"id": 25, "name": "Pale Flower of Darkness", "mode": "Eliwood Mode"},
+        {"id": 25, "name": "Crazed Beast", "mode": "Hector Mode"},
+        {"id": 26, "name": "Battle Before Dawn", "mode": "Eliwood Mode"},
+        {"id": 26, "name": "Unfulfilled Heart", "mode": "Hector Mode"},
+        {"id": "26x", "name": "Night of Farewells", "mode": "Eliwood Mode"},
+        {"id": 27, "name": "Cog of Destiny", "mode": "Eliwood Mode"},
+        {"id": 27, "name": "Pale Flower of Darkness", "mode": "Hector Mode"},
+        {"id": 28, "name": "Valorous Roland", "mode": "Eliwood Mode"},
+        {"id": 28, "name": "Battle Before Dawn", "mode": "Hector Mode"},
+        {"id": "28x", "name": "Night of Farewells", "mode": "Hector Mode"},
+        {"id": 29, "name": "Sands of Time", "mode": "Eliwood Mode"},
+        {"id": 29, "name": "Cog of Destiny", "mode": "Hector Mode"},
+        {"id": "29x", "name": "Battle Preparations", "mode": "Eliwood Mode"},
+        {"id": 30, "name": "Victory or Death", "mode": "Eliwood Mode"},
+        {"id": 30, "name": "The Berserker", "mode": "Hector Mode"},
+        {"id": 31, "name": "Light", "name_alt": "Sands of Time", "mode": "Eliwood Mode"},
+        {"id": 31, "name": "Sands of Time", "mode": "Hector Mode"},
+        {"id": "31x", "name": "Battle Preparations", "mode": "Hector Mode"},
+        {"id": 32, "name": "Victory or Death", "mode": "Hector Mode"},
+        {"id": "32x", "name": "The Value of Life", "mode": "Hector Mode"},
+        {"id": 33, "name": "Light", "mode": "Hector Mode"}
     ]
 }
