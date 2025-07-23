@@ -3,18 +3,18 @@
 let characters;
 let gameModes;
 let currentSelectedGameMode;
+let currentChapter;
+
 
 // key for storing dead characters in localStorage
 const LOCAL_STORAGE_KEY = "fireEmblemIronmanSave";
 
 const charContainer = document.querySelector(".characterContainer");
 const chapSelect = document.querySelector("#chapSelect");
-
-let currentChapter;
-
-const navChapterButtons = document.querySelectorAll(".navChapter");
 const prevButton = document.querySelector("#prevButton");
 const nextButton = document.querySelector("#nextButton");
+
+const graveyardContainer = document.querySelector(".graveyardContainer");
 
 async function fetchGameData(filename) {
     try {
@@ -74,8 +74,10 @@ function loadGameDataFromStorage() {
         if (loadedGameData.currentChapter != null) {
             // update global chapter variable
             currentChapter = loadedGameData.currentChapter;
-            // update dropdown to reflect the loaded chapter
-            chapSelect.value = currentChapter;
+            if (chapSelect) {
+                // update dropdown to reflect the loaded chapter
+                chapSelect.value = currentChapter;
+            }
         }
     }
 }
@@ -144,7 +146,7 @@ function filterJoinChapter(character) {
 function filterCharactersByChapter() {
     const selectedChapter = chapSelect.value;
     // if no specific chapter is selected, display characters for all chapters.
-    if (selectedChapter == "All" || selectedChapter == "") {
+    if (selectedChapter == "") {
         return characters;
     }
     // get and return filtered characters
@@ -179,7 +181,9 @@ function updateChapter(direction) {
     currentChapter = chapSelect.options[newChapterIndex].value;
 }
 
-function displayCharacters(characters) {
+function displayCharacters(characters, containerElement) {
+    containerElement.innerHTML = "";
+
     characters.forEach(char => {
         // container to add spacing between each display
         const displayContainer = document.createElement("div");
@@ -209,7 +213,7 @@ function displayCharacters(characters) {
 
         unitDisplay.append(portrait, bigX, name);
         displayContainer.append(unitDisplay);
-        charContainer.append(displayContainer);
+        containerElement.append(displayContainer);
 });
 }
 
@@ -361,7 +365,13 @@ function resetGameData() {
     displayCharacters(filteredChars);
 }
 
-async function init() {
+function closeElement(element) {
+    if (element) {
+        element.remove();
+    }
+}
+
+async function initTrackerPage() {
     // USING blazingblade.json FOR TESTING PURPOSES
     // fetch the data for the game chosen 
     const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
@@ -409,19 +419,8 @@ async function init() {
         populateChapterDropdown(currentSelectedGameMode);
         loadGameDataFromStorage();
 
-        // if global chapter variable has a value, set dropdown's initial value
-        if (currentChapter != undefined && currentChapter != null) {
-            chapSelect.value = currentChapter;
-        }
-        // if no saved data for current chapter...
-        else {
-            // set dropdown and global chapter variable to the start chapter of selected game mode
-            currentChapter = currentSelectedGameMode.startChapter;
-            chapSelect.value = currentSelectedGameMode.startChapter;
-        }
-
         let filteredChars = filterCharactersByChapter();
-        displayCharacters(filteredChars);
+        displayCharacters(filteredChars, charContainer);
     }
 
     else {
@@ -430,46 +429,170 @@ async function init() {
     }
 }
 
+// graveyard page exclusive functions
+
+function generateDeathDetailsModal(character) {
+    return `
+    <div class="deathDetailsModal">
+        <div class="modalContent">
+            <div class="closeButtonContainer">
+                <button class="closeButton">X</button>
+            </div>
+            <div class="modalDetailsContainer">
+                <h3>${character.charName}'s Final Moments</h3>
+                <img src="${character.image}" alt="${character.charName}" class="modal-portrait">
+                <p>Fell in Chapter ${character.deathChapter}</p>
+                <p class="death-note">"<i>${character.deathNote}</i>"</p>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+function displayDeathDetailsModal(characterDisplayElement) {
+    // grab unique attribute on character display
+    const charId = characterDisplayElement.dataset.charId;
+    let character;
+
+    // grab the first character object that has the ID
+    character = characters.find(c => c.id == charId);
+
+    // if no character object is found, prevent the modal from opening.
+    if (!character) {
+        console.error("Character not found for modal.")
+        return;
+    }
+
+    // display the modal
+    document.body.insertAdjacentHTML("beforeend", generateDeathDetailsModal(character));
+
+    const modal = document.querySelector(".deathDetailsModal");
+    const closeButton = modal.querySelector(".closeButton");
+
+    closeButton.addEventListener("click", () => {
+        closeElement(modal);
+    })
+}
+
+async function initGraveyardPage() {
+    // USING blazingblade.json FOR TESTING PURPOSES
+    // fetch the data for the game chosen 
+    const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
+
+    if (fetchedData) {
+        // assign values to global variables based on fetched game data
+        characters = fetchedData.characters;
+        gameModes = fetchedData.gameModes;
+        const selectedModeIdFromStorage = localStorage.getItem("selectedGameMode");
+
+        // if user has selected a mode, set global variable
+        if (selectedModeIdFromStorage) {
+            currentSelectedGameMode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
+        }
+
+        // if user has not selected a mode...
+        if (!currentSelectedGameMode) {
+            // set default to Eliwood mode
+            currentSelectedGameMode = gameModes.find(mode => mode.id == 2);
+
+            // if default doesn't exist, return and stop function
+            if (!currentSelectedGameMode) {
+                console.error("Default game mode not found. Cannot initialize tracker.");
+                return;
+            }
+        }
+
+        const modeCharacters = currentSelectedGameMode.charactersInMode.map(modeChar => {
+            const baseChar = characters.find(char => char.id == modeChar.charId);
+            if (baseChar) {
+                return {
+                    // copy all properties from original character
+                    ...baseChar,
+                    // set the character's join chapter for this mode and merge it into one character array (specific to this mode)
+                    joinChapter: modeChar.joinChapter
+                };
+            }
+            return null;
+        }) // could add .filter(Boolean) to remove any nonvalid characters created 
+
+        // assign new array with correct join chapter values to global characters array
+        characters = modeCharacters;
+        loadGameDataFromStorage();
+
+        const deadCharacters = characters.filter(char => char.status == "deceased");
+
+        if (deadCharacters.length > 0) {
+            displayCharacters(deadCharacters, graveyardContainer);
+
+            graveyardContainer.addEventListener("click", (event) => {
+                const selectedCharElement = event.target.closest(".charDisplay");
+                if (selectedCharElement && selectedCharElement.classList.contains("dead")) {
+                    displayDeathDetailsModal(selectedCharElement);
+                }
+            })
+        }
+        else {
+            graveyardContainer.innerHTML = "<p>No characters have died in this playthrough.</p>"
+        }
+    }
+
+    else {
+        // handle case where data can't be loaded
+        console.error("Failed to load game data. Graveyard may not function correctly.");
+    }
+}
+
 // event listeners
+if (chapSelect) {
+    chapSelect.addEventListener("change", () => {
+        // update current chapter
+        currentChapter = chapSelect.value;
+        // Get filtered characters
+        const filteredChars = filterCharactersByChapter();
+        // Call displayCharacters with filtered list
+        displayCharacters(filteredChars, charContainer);
+        saveGameDataToStorage();
+    })
+}
 
-chapSelect.addEventListener("change", () => {
-    // update current chapter
-    currentChapter = chapSelect.value;
-    // Clear existing characters so they don't stack
-    charContainer.innerHTML = "";
-    // Get filtered characters
-    const filteredChars = filterCharactersByChapter();
-    // Call displayCharacters with filtered list
-    displayCharacters(filteredChars);
-})
+if (prevButton) {
+    prevButton.addEventListener("click", () => {
+        updateChapter("prev");
 
-prevButton.addEventListener("click", () => {
-    updateChapter("prev");
+        const filteredChars = filterCharactersByChapter();
+        displayCharacters(filteredChars, charContainer);
+        saveGameDataToStorage();
+    })
+}
 
-    // clear current selection of characters and characters by chapter
-    charContainer.innerHTML = "";
-    const filteredChars = filterCharactersByChapter();
-    displayCharacters(filteredChars);
-})
+if (nextButton) {
+    nextButton.addEventListener("click", () => {
+        updateChapter("next");
 
-nextButton.addEventListener("click", () => {
-    updateChapter("next");
+        const filteredChars = filterCharactersByChapter();
+        displayCharacters(filteredChars, charContainer);
+        saveGameDataToStorage();
+    })
+}
 
-    charContainer.innerHTML = "";
-    const filteredChars = filterCharactersByChapter();
-    displayCharacters(filteredChars);
-})
+if (charContainer) {
+    // call toggleCharacterPortrait when user clicks on a unit display
+    charContainer.addEventListener("click", (event) => {
+        // grab the specific character display clicked
+        let selectedCharElement = event.target.closest(".charDisplay");
+        // if user selects a unit display and the unit is not already dead...
+        if (selectedCharElement && !selectedCharElement.classList.contains("dead")) {
+            // open the modal
+            modalHandler(selectedCharElement);
+        }
+    })
+}
 
-// call toggleCharacterPortrait when user clicks on a unit display
-charContainer.addEventListener("click", (event) => {
-    // grab the specific character display clicked
-    let selectedCharElement = event.target.closest(".charDisplay");
-    // if user selects a unit display and the unit is not already dead...
-    if (selectedCharElement && !selectedCharElement.classList.contains("dead")) {
-        // open the modal
-        modalHandler(selectedCharElement);
+document.addEventListener("DOMContentLoaded", () => {
+    if (document.body.id == "tracker-page") {
+        initTrackerPage();
+    }
+    else if (document.body.id == "graveyard-page") {
+        initGraveyardPage();
     }
 })
-
-// call key functions needed to display/start website correctly
-init();

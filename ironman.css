@@ -380,6 +380,104 @@ textarea {
     margin-top: 50px;
 }
 
+/* class for when play button is selected */
+.playButton.selected {
+    background-color: green;
+    color: white;
+}
+
+.resetGameButton.selected {
+    background-color: darkred;
+    color: white;
+}
+
+/* <div class="saveFileContainer">
+          <div class="saveHeader">
+            <h4>Lyn Mode</h4>
+          </div>
+          <div class="fileContentContainer">
+            <div class="imgContainer">
+              <img src="images/char-sprite/small-sprites/small-lyn.png" alt="Lyn Sprite">
+            </div>
+            <div class="fileDetailsContainer">
+              <p>7/22/25</p>
+              <p>Deaths: 7 | Chapter: 17</p>
+            </div>
+          </div>
+        </div> */
+
+.saveFilesSpacingContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.allSaveFilesContainer {
+    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 1000px;
+    border: 4px solid darkblue;
+}
+
+.saveFileContainer {
+    background-image: url(images/misc/bigger-display-background.jpeg);
+    width: 210px;
+    height: 60px;
+    border-radius: 10px;
+    margin: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid darkblue;
+}
+
+.saveFileContainer:hover {
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.9);
+}
+
+.saveHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15px;
+    width: fit-content;
+    margin-bottom: 2px;
+    background-color: #faee85;
+}
+
+.saveFileContainer h4 {
+    text-align: center;
+}
+
+.fileContentContainer img {
+    width: 36px;
+    height: 36px;
+}
+
+.imgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 36px;
+    margin-right: 15px;
+}
+
+.fileContentContainer {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+}
+
+.fileDetailsContainer {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
 /* universal footer */
 
 footer {
