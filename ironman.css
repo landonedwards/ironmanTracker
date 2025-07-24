@@ -74,7 +74,17 @@ body {
     border: 5px solid #635939;
 }
 
-.charDisplay {
+.graveyardContainer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 720px;
+    margin: 0 auto;
+    margin-bottom: 60px;
+    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    border: 5px solid darkblue;
+}
+
+.charDisplay, .graveDisplay {
     height: 105px;
     padding: 3px;
     text-align: center;
@@ -84,7 +94,7 @@ body {
     border: 4px solid #635939;
 }
 
-.charDisplay p {
+.charDisplay p, .graveDisplay p {
     margin-top: 5px;
     font-size: 8px;
     font-family: var(--gba-font);
@@ -196,7 +206,7 @@ h1 {
     display: none;
 }
 
-.charDisplay.dead {
+.charDisplay.dead, .graveDisplay {
     filter: grayscale(100%);
 }
 
@@ -265,6 +275,43 @@ h1 {
     font-size: 17px;
 }
 
+.deathDetailsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    padding: 20px;
+}
+
+.modalDetailsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.deathDetailsModal .modalDetailsContainer img {
+    width: 120px;
+    background-color: whitesmoke;
+    border: 2px solid gold;
+}
+
+.deathNote {
+    margin-top: 5px;
+}
+
+.noDeathText {
+    color: whitesmoke;
+    font-size: 17px;
+    text-align: center;
+    margin-left: 30%;
+}
+
 .deathConfirmationContainer {
     display: flex;
     justify-content: center;
@@ -319,6 +366,16 @@ textarea {
 .noteOptionsContainer {
     display: flex;
     justify-content: center;
+}
+
+.imageHeader {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.imageHeader img {
+    width: 200px;
 }
 
 /* Game Select page styling*/
@@ -390,21 +447,6 @@ textarea {
     background-color: darkred;
     color: white;
 }
-
-/* <div class="saveFileContainer">
-          <div class="saveHeader">
-            <h4>Lyn Mode</h4>
-          </div>
-          <div class="fileContentContainer">
-            <div class="imgContainer">
-              <img src="images/char-sprite/small-sprites/small-lyn.png" alt="Lyn Sprite">
-            </div>
-            <div class="fileDetailsContainer">
-              <p>7/22/25</p>
-              <p>Deaths: 7 | Chapter: 17</p>
-            </div>
-          </div>
-        </div> */
 
 .saveFilesSpacingContainer {
     display: flex;

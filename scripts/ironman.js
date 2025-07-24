@@ -4,6 +4,7 @@ let characters;
 let gameModes;
 let currentSelectedGameMode;
 let currentChapter;
+let currentModalCharElement;
 
 
 // key for storing dead characters in localStorage
@@ -15,6 +16,9 @@ const prevButton = document.querySelector("#prevButton");
 const nextButton = document.querySelector("#nextButton");
 
 const graveyardContainer = document.querySelector(".graveyardContainer");
+
+const resetButton = document.querySelector(".resetGameButton");
+
 
 async function fetchGameData(filename) {
     try {
@@ -182,6 +186,7 @@ function updateChapter(direction) {
 }
 
 function displayCharacters(characters, containerElement) {
+    // clear container to prevent stacking
     containerElement.innerHTML = "";
 
     characters.forEach(char => {
@@ -190,7 +195,13 @@ function displayCharacters(characters, containerElement) {
         displayContainer.classList.add("displayContainer");
 
         const unitDisplay = document.createElement("div");
-        unitDisplay.classList.add("charDisplay");
+        // check if page is graveyard or tracker and add respective class for styling
+        if (containerElement == graveyardContainer) {
+            unitDisplay.classList.add("graveDisplay");
+        }
+        else {
+            unitDisplay.classList.add("charDisplay");
+        }
         // assign the id of the character object to a custom attribute on the div for future reference
         unitDisplay.dataset.charId = char.id;
 
@@ -310,7 +321,9 @@ function promptForDeathNote(character, characterDisplayElement) {
             deathNote = "Died fighting for a better future.";
             saveDeathNote(character, deathNote, characterDisplayElement);
         }
-        saveDeathNote(character, deathNote, characterDisplayElement);
+        else {
+            saveDeathNote(character, deathNote, characterDisplayElement);
+        }
     });
 
     cancelButton.addEventListener("click", closeDeathModal)
@@ -442,7 +455,7 @@ function generateDeathDetailsModal(character) {
                 <h3>${character.charName}'s Final Moments</h3>
                 <img src="${character.image}" alt="${character.charName}" class="modal-portrait">
                 <p>Fell in Chapter ${character.deathChapter}</p>
-                <p class="death-note">"<i>${character.deathNote}</i>"</p>
+                <p class="deathNote">"<i>${character.deathNote}</i>"</p>
             </div>
         </div>
     </div>
@@ -520,19 +533,68 @@ async function initGraveyardPage() {
         loadGameDataFromStorage();
 
         const deadCharacters = characters.filter(char => char.status == "deceased");
-
+        // check if there is at least one dead character to display
         if (deadCharacters.length > 0) {
             displayCharacters(deadCharacters, graveyardContainer);
 
+            // if user clicks on a character in the display...
             graveyardContainer.addEventListener("click", (event) => {
-                const selectedCharElement = event.target.closest(".charDisplay");
+                // grab the specific display element
+                const selectedCharElement = event.target.closest(".graveDisplay");
                 if (selectedCharElement && selectedCharElement.classList.contains("dead")) {
+                    // update global current modal character element
+                    currentModalCharElement = selectedCharElement;
                     displayDeathDetailsModal(selectedCharElement);
+                }
+            })
+
+            document.addEventListener("keydown", (event) => {
+                const deathDetailsModal = document.querySelector(".deathDetailsModal");
+
+                // grab character object ID of the corresponding character display element
+                const currentCharId = currentModalCharElement.dataset.charId;
+                // grabs index of the current character display's character object
+                const currentCharIndex = deadCharacters.findIndex(char => char.id == currentCharId);
+
+                if (event.key == "ArrowRight") {
+                    // if current character display is not the last in the list...
+                    if (currentCharIndex < deadCharacters.length - 1) {
+                        const nextChar = deadCharacters[currentCharIndex + 1];
+                        // grab the next corresponding character display 
+                        const nextCharElement = graveyardContainer.querySelector(`[data-char-id="${nextChar.id}"]`);
+
+                        if (nextCharElement) {
+                            closeElement(deathDetailsModal);
+                            currentModalCharElement = nextCharElement;
+                            displayDeathDetailsModal(nextCharElement);
+                        }
+                    }
+                }
+                else if (event.key == "ArrowLeft") {
+                    // if current character display is not the first in the list...
+                    if (currentCharIndex > 0) {
+                        const prevChar = deadCharacters[currentCharIndex - 1];
+                        // grab the character display of the previous character 
+                        const prevCharElement = graveyardContainer.querySelector(`[data-char-id="${prevChar.id}"]`);
+                        
+                        if (prevCharElement) {
+                            closeElement(deathDetailsModal);
+                            currentModalCharElement = prevCharElement;
+                            displayDeathDetailsModal(prevCharElement);
+                        }
+                    }
+                }
+
+                // allow user to close modal with the escape key
+                if (event.key == "Escape") {
+                    closeElement(deathDetailsModal);
+                    // reset global character display element
+                    currentModalCharElement = null;
                 }
             })
         }
         else {
-            graveyardContainer.innerHTML = "<p>No characters have died in this playthrough.</p>"
+            graveyardContainer.innerHTML = "<p class='noDeathText'>No characters have died in this playthrough.</p>";
         }
     }
 
@@ -540,6 +602,15 @@ async function initGraveyardPage() {
         // handle case where data can't be loaded
         console.error("Failed to load game data. Graveyard may not function correctly.");
     }
+}
+
+// game select page exclusive functions
+if (resetButton) {
+    resetButton.addEventListener("click", () => {
+        resetButton.classList.toggle("selected");
+        // ADD MODAL/WARNING MESSAGE TO CONFIRM THE USER WANTS TO RESET
+        // resetGameData();
+    })
 }
 
 // event listeners
