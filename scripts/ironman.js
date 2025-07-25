@@ -17,6 +17,8 @@ const nextButton = document.querySelector("#nextButton");
 
 const graveyardContainer = document.querySelector(".graveyardContainer");
 
+const chapterSummaryContainer = document.querySelector(".chapterSummaryContainer");
+
 const resetButton = document.querySelector(".resetGameButton");
 
 
@@ -356,6 +358,37 @@ function gameOverModalHTML() {
     `
 }
 
+function resetConfirmationModalHTML() {
+    return `
+    <div class="resetConfirmModal">
+      <div class="resetConfirmModalContent">
+        <p>Are you sure you want to reset your save data? Doing so will delete all recorded deaths, their details, and completed chapters.</p>
+        <div class="resetButtonsContainer">
+          <button class="resetYesButton">Yes</button>
+          <button class="resetNoButton">No</button>
+        </div>
+      </div>
+    </div>
+    `;
+}
+
+function resetModalHandler() {
+    document.body.insertAdjacentHTML("beforeend", resetConfirmationModalHTML());
+
+    const yesButton = document.querySelector(".resetYesButton");
+    const noButton = document.querySelector(".resetNoButton");
+    const resetConfirmationModal = document.querySelector(".resetConfirmModal");
+
+    yesButton.addEventListener("click", () => {
+        closeElement(resetConfirmationModal);
+        resetGameData();
+    })
+
+    noButton.addEventListener("click", () => {
+        closeElement(resetConfirmationModal);
+    })
+}
+
 function resetGameData() {
     // reset each character's status back to initial values
     characters.forEach(char => {
@@ -371,11 +404,13 @@ function resetGameData() {
     // save reset game data to local storage (character status and current chapter)
     saveGameDataToStorage();
 
-    // clear character container
-    charContainer.innerHTML = "";
-    filteredChars = filterCharactersByChapter();
-    // reset character display 
-    displayCharacters(filteredChars);
+    if (document.body.id == "tracker-page" && charContainer) {
+        // clear character container
+        charContainer.innerHTML = "";
+        filteredChars = filterCharactersByChapter();
+        // reset character display 
+        displayCharacters(filteredChars, charContainer);
+    }
 }
 
 function closeElement(element) {
@@ -604,12 +639,121 @@ async function initGraveyardPage() {
     }
 }
 
+// report page exclusive functions 
+
+function displayChapterReport() {
+    chapterSummaryContainer.innerHTML = "";
+    const numericCurrentChapter = getNumericChapterValue(currentChapter);
+
+    currentSelectedGameMode.chapters.forEach(chapter => {
+        const numericChapterNumber = getNumericChapterValue(chapter.number);
+
+        if (numericChapterNumber <= numericCurrentChapter) {
+            const deadCharsInChapter = characters.filter(char => 
+                char.status == "deceased" && char.deathChapter == chapter.number
+            );
+
+            let chapterDeathsHTML = "";
+            if (deadCharsInChapter.length > 0) {
+                deadCharsInChapter.forEach(deadChar => {
+                    chapterDeathsHTML += `
+                    <img src="${deadChar.image}" 
+                        alt="${deadChar.charName}" 
+                        title='${deadChar.charName} | Died in Chapter ${deadChar.deathChapter} - "${deadChar.deathNote}"'>
+                    `;
+                })
+            }
+
+            let chapterSummaryHTML = "";
+            if (chapterDeathsHTML != "") {
+                chapterSummaryHTML = `
+                <div class="chapterSummary">
+                    <h4>Chapter ${chapter.number}: ${chapter.name}</h4>
+                    <hr>
+                    <p>Deaths:</p>
+                    <div class="chapterDeathsContainer">
+                        ${chapterDeathsHTML}
+                    </div>
+                </div>
+                `;
+            }
+            else {
+                chapterSummaryHTML = `
+                <div class="chapterSummary noDeaths">
+                    <h4>Chapter ${chapter.number}: ${chapter.name}</h4>
+                    <hr>
+                </div>
+                `;
+            }
+
+            chapterSummaryContainer.insertAdjacentHTML("beforeend", chapterSummaryHTML);
+        }
+    })
+
+    if (chapterSummaryContainer.innerHTML == "") {
+        chapterSummaryContainer.innerHTML = "<p>No chapters have been completed, or no data is available to display.</p>"
+    }
+}
+
+async function initReportPage() {
+    // USING blazingblade.json FOR TESTING PURPOSES
+    // fetch the data for the game chosen 
+    const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
+
+    if (fetchedData) {
+        // assign values to global variables based on fetched game data
+        characters = fetchedData.characters;
+        gameModes = fetchedData.gameModes;
+        const selectedModeIdFromStorage = localStorage.getItem("selectedGameMode");
+
+        // if user has selected a mode, set global variable
+        if (selectedModeIdFromStorage) {
+            currentSelectedGameMode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
+        }
+
+        // if user has not selected a mode...
+        if (!currentSelectedGameMode) {
+            // set default to Eliwood mode
+            currentSelectedGameMode = gameModes.find(mode => mode.id == 2);
+
+            // if default doesn't exist, return and stop function
+            if (!currentSelectedGameMode) {
+                console.error("Default game mode not found. Cannot initialize tracker.");
+                return;
+            }
+        }
+
+        const modeCharacters = currentSelectedGameMode.charactersInMode.map(modeChar => {
+            const baseChar = characters.find(char => char.id == modeChar.charId);
+            if (baseChar) {
+                return {
+                    // copy all properties from original character
+                    ...baseChar,
+                    // set the character's join chapter for this mode and merge it into one character array (specific to this mode)
+                    joinChapter: modeChar.joinChapter
+                };
+            }
+            return null;
+        }) // could add .filter(Boolean) to remove any nonvalid characters created 
+
+        // assign new array with correct join chapter values to global characters array
+        characters = modeCharacters;
+
+        // call key functions needed for startup
+        loadGameDataFromStorage();
+        displayChapterReport();
+    }
+
+    else {
+        // handle case where data can't be loaded
+        console.error("Failed to load game data. Tracker may not function correctly.");
+    }
+}
+
 // game select page exclusive functions
 if (resetButton) {
     resetButton.addEventListener("click", () => {
-        resetButton.classList.toggle("selected");
-        // ADD MODAL/WARNING MESSAGE TO CONFIRM THE USER WANTS TO RESET
-        // resetGameData();
+        resetModalHandler();
     })
 }
 
@@ -665,5 +809,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else if (document.body.id == "graveyard-page") {
         initGraveyardPage();
+    }
+    else if (document.body.id == "report-page") {
+        initReportPage();
     }
 })

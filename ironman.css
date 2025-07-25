@@ -327,17 +327,64 @@ h1 {
     font-size: 17px;
 }
 
+/* <div class="resetConfirmModal">
+      <div class="resetConfirmModalContent">
+        <p>Are you sure you want to reset your save data? Doing so will delete all recorded deaths, their details, and completed chapters.</p>
+        <div class="resetButtonsContainer">
+          <button class="resetYesButton">Yes</button>
+          <button class="resetNoButton">No</button>
+        </div>
+      </div>
+    </div> */
+
+.resetConfirmModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    padding: 20px;
+}
+
+.resetConfirmModalContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    background-color: #042e8f;
+    color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: inset 0px 0px 12px 7px rgba(0, 0, 0, 0.9);
+    font-size: 17px;
+}
+
+.resetYesButton, .resetNoButton {
+    width: 70px;
+    border-radius: 15px;
+    font-size: 15px;
+}
+
 textarea {
     font-size: 14px;
 }
 
-#yesButton {
+#yesButton, .resetYesButton {
     background-color: rgb(142, 17, 17);
     color: white;
 }
 
-#yesButton:hover {
+#yesButton:hover, .resetYesButton:hover {
     background-color: rgb(208, 111, 111);
+}
+
+#noButton:hover, .resetNoButton:hover {
+    background-color: lightgray;
 }
 
 #saveNoteButton {
@@ -518,6 +565,67 @@ textarea {
     display: flex;
     align-items: center;
     text-align: center;
+}
+
+.chapterSummaryContainerContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.chapterSummaryContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chapterSummary {
+    margin: 10px;
+    background: linear-gradient(to bottom, #4694e7, #103d6c);
+    width: fit-content;
+    width: 400px;
+    height: 190px;
+    border-radius: 25px;
+}
+
+.chapterSummary.noDeaths {
+    height: 100px;
+}
+
+.resetButtonContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.resetButtonContainer button {
+    width: 120px;
+    border-radius: 15px;
+    font-size: 18px;
+}
+
+.resetButtonContainer button:hover {
+    background-color: darkred;
+    color: white;
+}
+
+.chapterDeathsContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.chapterSummary hr {
+    width: 280px;
+    margin-top: -10px;
+}
+
+.chapterSummary h4, .chapterSummary p {
+    text-align: center;
+    color: white;
+}
+
+.chapterSummary img {
+    width: 70px;
+    margin: 5px 6px 0px 6px;
 }
 
 /* universal footer */
