@@ -153,7 +153,6 @@
             { "charId": 38, "joinChapter": 26 },
             { "charId": 39, "joinChapter": 26 },
             { "charId": 40, "joinChapter": 27 },
-            { "charId": 28, "joinChapter": 28 },
             { "charId": 42, "joinChapter": 30 },
             { "charId": 43, "joinChapter": 31 }
            ]
@@ -236,7 +235,6 @@
                 { "charId": 38, "joinChapter": 28 },
                 { "charId": 39, "joinChapter": 28 },
                 { "charId": 40, "joinChapter": 29 },
-                { "charId": 28, "joinChapter": 30 },
                 { "charId": 41, "joinChapter": 31 },
                 { "charId": 42, "joinChapter": 32 },
                 { "charId": 43, "joinChapter": 31 }

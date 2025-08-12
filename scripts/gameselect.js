@@ -77,12 +77,6 @@ function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName,
     `;
 }
 
-function closeElement(element) {
-    if (element) {
-        element.remove();
-    }
-}
-
 playButton.addEventListener("click", () => {
     gameShelfModalHandler();
     // add/remove the selected class list
