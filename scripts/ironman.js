@@ -244,7 +244,7 @@ function generateDeathConfirmationModal(characterName, chapter) {
               <p><span class="deathModalSpecialText chapterText">Chapter ${chapter}</span></p>
               <div class="characterModalInfo">
                 <div class="portraitContainer">
-                  <img src="images/char-sprite/${characterName.toLowerCase()}.png">
+                  <img src="images/char-sprite/fe7/${characterName.toLowerCase()}.png">
                 </div>
                 <p>Did <span class="deathModalSpecialText">${characterName}</span> fall in battle?</p>
               </div>
