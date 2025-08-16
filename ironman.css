@@ -490,7 +490,17 @@ textarea {
     color: white;
 }
 
+.playButton:hover {
+    background-color: green;
+    color: white;
+}
+
 .resetGameButton.selected {
+    background-color: darkred;
+    color: white;
+}
+
+.resetGameButton:hover {
     background-color: darkred;
     color: white;
 }

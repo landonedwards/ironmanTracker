@@ -19,7 +19,10 @@ const graveyardContainer = document.querySelector(".graveyardContainer");
 
 const chapterSummaryContainer = document.querySelector(".chapterSummaryContainer");
 
+const playButton = document.querySelector(".playButton");
 const resetButton = document.querySelector(".resetGameButton");
+
+let main = document.querySelector("main");
 
 
 async function fetchGameData(filename) {
@@ -380,12 +383,14 @@ function resetModalHandler() {
     const resetConfirmationModal = document.querySelector(".resetConfirmModal");
 
     yesButton.addEventListener("click", () => {
+        resetButton.classList.remove("selected");
         closeElement(resetConfirmationModal);
         resetGameData();
     })
 
     noButton.addEventListener("click", () => {
         closeElement(resetConfirmationModal);
+        resetButton.classList.remove("selected");
     })
 }
 
@@ -751,9 +756,97 @@ async function initReportPage() {
 }
 
 // game select page exclusive functions
+
+function gameShelfModalHTML() {
+    return `
+    <div class="shelfContainerContainer">
+        <div class="shelfContainer">
+          <img
+            class="shelfImg"
+            src="images/misc/game-shelf-full.png"
+            alt="Wooden Shelf"
+          />
+          <div class="gameSelectContainer">
+            <img
+              class="gameCover"
+              id="0"
+              src="images/misc/fe6-cover.png"
+              alt="Fire Emblem 6 Cover"
+            />
+            <img
+              class="gameCover"
+              id="1"
+              src="images/misc/fe7-cover.png"
+              alt="Fire Emblem 7 Cover"
+            />
+            <img
+              class="gameCover"
+              id="2"
+              src="images/misc/fe8-cover.png"
+              alt="Fire Emblem 8 Cover"
+            />
+          </div>
+        </div>
+      </div>
+    `;
+}
+
+function closeGameShelfModal() {
+    const gameShelfModal = document.querySelector(".shelfContainerContainer");
+    closeElement(gameShelfModal);
+}
+
+function displayGameShelf() {
+    main.insertAdjacentHTML("beforeend", gameShelfModalHTML());
+}
+
+function generateSaveDataContainer() {
+    return `
+    <div class="saveFilesSpacingContainer">
+      <div class="allSaveFilesContainer"></div>
+    </div>
+    `;
+}
+
+function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName, currentChapter, lastPlayedDate) {
+    return `
+    <div class="saveFileContainer">
+      <div class="saveHeader">
+        <h4>${gameMode} ${difficulty}</h4>
+       </div>
+      <div class="fileContentContainer">
+        <div class="imgContainer">
+          <img src="images/char-sprite/small-sprites/small-${lordName.toLowerCase()}.png" alt="${lordName} Sprite">
+        </div>
+        <div class="fileDetailsContainer">
+          <p>
+            ${lastPlayedDate}
+            <br>
+            Deaths: ${deathCount} | Chapter: ${currentChapter}
+          </p>
+        </div>
+      </div>
+    </div>
+    `;
+}
+
 if (resetButton) {
     resetButton.addEventListener("click", () => {
+        resetButton.classList.add("selected");
         resetModalHandler();
+    })
+}
+
+if (playButton) {
+    playButton.addEventListener("click", () => {
+        playButton.classList.toggle("selected");
+
+        if (playButton.classList.contains("selected")) {
+            displayGameShelf();
+        }
+        else {
+            closeGameShelfModal();
+        }
     })
 }
 
