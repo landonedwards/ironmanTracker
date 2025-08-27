@@ -1,7 +1,10 @@
 // variable declarations 
 
 let characters;
+// for blazing blade
 let gameModes;
+// for sacred stones and binding blade
+let gameDetails;
 let currentSelectedGameMode;
 let currentChapter;
 let currentModalCharElement;
@@ -687,6 +690,7 @@ function displayChapterReport() {
                 <div class="chapterSummary noDeaths">
                     <h4>Chapter ${chapter.number}: ${chapter.name}</h4>
                     <hr>
+                    <p>No Deaths</p>
                 </div>
                 `;
             }
@@ -769,19 +773,19 @@ function gameShelfModalHTML() {
           <div class="gameSelectContainer">
             <img
               class="gameCover"
-              id="0"
+              data-game-id="binding"
               src="images/misc/fe6-cover.png"
               alt="Fire Emblem 6 Cover"
             />
             <img
               class="gameCover"
-              id="1"
+              data-game-id="blazing"
               src="images/misc/fe7-cover.png"
               alt="Fire Emblem 7 Cover"
             />
             <img
               class="gameCover"
-              id="2"
+              data-game-id="sacred"
               src="images/misc/fe8-cover.png"
               alt="Fire Emblem 8 Cover"
             />
@@ -828,6 +832,64 @@ function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName,
       </div>
     </div>
     `;
+}
+
+// WORK IN PROGRESS. NEED TO FIX ISSUE WITH charModesContainer (is not a string literal and cannot be used with insertAdjacentHTML)
+
+function generateBlazingModeOptions() {
+    let charModesContainer = document.createElement("div");
+    gameModes.forEach(mode => {
+        charModesContainer.innerHTML += 
+        `
+        <div class="charModeOption">
+          <img src="images/char-sprite/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
+          <p>${mode.name}</p>
+        </div>
+        `
+    })
+
+    main.insertAdjacentHTML("beforeend", charModesContainer);
+}
+
+// SAME ISSUE HERE BUT WITH difficultyContainer
+
+function generateGameOptionsModal(selectedGameId) {
+    const difficultyContainer = document.createElement("div");
+
+    if (selectedGameId == "binding" || selectedGameId == "sacred") {
+        for (let i = 0; i < 3; i++) {
+            difficultyContainer += 
+            `
+            <div class="difficultyOption">
+            ${gameDetails.difficultyOptions[i]}
+            </div>
+            `
+        }
+        main.insertAdjacentHTML("beforeend", difficultyContainer);
+    }
+    else if (selectedGameId == "blazing") {
+        generateBlazingModeOptions();
+    }
+}
+
+function gameOptionsModalHandler() {
+    const gameShelf = document.querySelector(".shelfContainer");
+    if (gameShelf) {
+        gameShelf.addEventListener("click", (event) => {
+            let selectedGameElement = event.target.closest(".gameCover");
+            selectedGameId = selectedGameElement.dataset.gameId;
+
+            switch (selectedGameId) {
+                case "binding":
+                
+                case "blazing":
+                    
+                case "sacred":
+
+                default:
+            }
+        })
+    }
 }
 
 if (resetButton) {

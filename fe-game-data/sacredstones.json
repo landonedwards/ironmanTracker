@@ -34,5 +34,45 @@
       { "id": 32, "charName": "Knoll", "joinChapter": 15, "image": "images/char-sprite/fe8/knoll.png", "status": "alive", "deathChapter": null, "deathNote": null },
       { "id": 33, "charName": "Myrrh", "joinChapter": 16, "image": "images/char-sprite/fe8/myrrh.png", "status": "alive", "deathChapter": null, "deathNote": null },
       { "id": 34, "charName": "Syrene", "joinChapter": 17, "image": "images/char-sprite/fe8/syrene.png", "status": "alive", "deathChapter": null, "deathNote": null }
+    ],
+
+    "gameDetails": [
+        {"name": "Main Campaign",
+        "startChapter": 0,
+        "endChapter": 21,
+        "chapters": [
+            {"number": 0, "name": "The Fall of Renais"},
+            {"number": 1, "name": "Escape!"},
+            {"number": 2, "name": "The Protected"},
+            {"number": 3, "name": "The Bandits of Borgo"},
+            {"number": 4, "name": "Ancient Horrors"},
+            {"number": 5, "name": "The Empire's Reach"},
+            {"number": "5x", "name": "Unbroken Heart"},
+            {"number": 6, "name": "Victims of War"},
+            {"number": 7, "name": "Waterside Renvall"},
+            {"number": 8, "name": "It's a Trap!"},
+            {"number": "9E", "name": "Distant Blade"},
+            {"number": "10E", "name": "Revolt at Carcino"},
+            {"number": "11E", "name": "Creeping Darkness"},
+            {"number": "12E", "name": "Village of Silence"},
+            {"number": "13E", "name": "Hamill Canyon"},
+            {"number": "14E", "name": "Queen of White Dunes"},
+            {"number": "9F", "name": "Fort Rigwald"},
+            {"number": "10F", "name": "Turning Traitor"},
+            {"number": "11F", "name": "Phantom Ship"},
+            {"number": "12F", "name": "Landing at Taizel"},
+            {"number": "13F", "name": "Fluorspar's Oath"},
+            {"number": "14F", "name": "Father and Son"},
+            {"number": 15, "name": "Scorched Sand"},
+            {"number": 16, "name": "Ruled by Madness"},
+            {"number": 17, "name": "River of Regrets"},
+            {"number": 18, "name": "Two Faces of Evil"},
+            {"number": 19, "name": "Last Hope"},
+            {"number": 20, "name": "Darkling Woods"},
+            {"number": 21, "name": "Sacred Stone"}
+        ],
+        "difficultyOptions": ["Easy", "Normal", "Difficult"],
+        "mainLord": "Eirika"
+    }
     ]
 }

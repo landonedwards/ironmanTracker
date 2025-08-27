@@ -47,7 +47,7 @@
 
     "gameModes": [
         {"id": 1,
-         "name": "Lyn's Story",
+         "name": "Lyn's Tale",
           "startChapter": 1,
            "endChapter": 10,
             "chapters":[
@@ -78,10 +78,12 @@
                 { "charId": 28, "joinChapter": 7 },
                 { "charId": 23, "joinChapter": 7 },
                 { "charId": 13, "joinChapter": 9 } 
-            ]
+            ],
+            "difficultyOptions": ["Normal", "Hard"],
+            "mainLord": "Lyn"
         },
         {"id": 2,
-         "name": "Eliwood's Story",
+         "name": "Eliwood's Tale",
           "startChapter": 11,
            "endChapter": 31,
            "chapters": [
@@ -155,10 +157,12 @@
             { "charId": 40, "joinChapter": 27 },
             { "charId": 42, "joinChapter": 30 },
             { "charId": 43, "joinChapter": 31 }
-           ]
+           ],
+           "difficultyOptions": ["Normal", "Hard"],
+           "mainLord": "Eliwood"
         },
         {"id": 3,
-         "name": "Hector's Story",
+         "name": "Hector's Tale",
           "startChapter": 11,
            "endChapter": 33,
             "chapters": [
@@ -238,6 +242,8 @@
                 { "charId": 41, "joinChapter": 31 },
                 { "charId": 42, "joinChapter": 32 },
                 { "charId": 43, "joinChapter": 31 }
-            ]
+            ],
+            "difficultyOptions": ["Normal", "Hard"],
+            "mainLord": "Hector"
         }
     ]}

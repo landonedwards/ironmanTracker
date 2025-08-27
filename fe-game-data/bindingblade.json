@@ -54,5 +54,54 @@
         { "id": 52, "charName": "Dayan", "recruitChapter": "20B", "image": "images/char-sprite/fe6/dayan.png", "status": "alive", "deathChapter": null, "deathNote": null },
         { "id": 53, "charName": "Yodel", "recruitChapter": 21, "image": "images/char-sprite/fe6/yodel.png", "status": "alive", "deathChapter": null, "deathNote": null },
         { "id": 54, "charName": "Karel", "recruitChapter": 23, "image": "images/char-sprite/fe6/karel.png", "status": "alive", "deathChapter": null, "deathNote": null }
-    ]
+    ],
+
+    "gameDetails": [
+        {"name": "Main Campaign",
+        "startChapter": 1,
+        "endChapter": 25,
+        "chapters": [
+            {"number": 1, "name": "Dawn of Destiny"},
+            {"number": 2, "name": "The Princess of Bern"},
+            {"number": 3, "name": "Late Arrival"},
+            {"number": 4, "name": "Collapse of the Alliance"},
+            {"number": 5, "name": "The Emblem of Fire"},
+            {"number": 6, "name": "The Trap"},
+            {"number": 7, "name": "The Rebellion of Ostia"},
+            {"number": 8, "name": "The Reunion"},
+            {"number": "8x", "name": "The Blazing Sword"},
+            {"number": 9, "name": "The Misty Isles"},
+            {"number": "10A", "name": "The Resistance Forces"},
+            {"number": "11A", "name": "The Hero of the Western Isles"},
+            {"number": "10B", "name": "Caught in the Middle"},
+            {"number": "11B", "name": "Escape to Freedom"},
+            {"number": 12, "name": "The True Enemy"},
+            {"number": "12x", "name": "The Axe of Thunder"},
+            {"number": 13, "name": "The Rescue Plan"},
+            {"number": 14, "name": "Arcadia"},
+            {"number": "14x", "name": "The Infernal Element"},
+            {"number": 15, "name": "The Dragon Girl"},
+            {"number": 16, "name": "Retaking the Capital"},
+            {"number": "16x", "name": "The Pinnacle of Light"},
+            {"number": "17A", "name": "The Path Through the Ocean"},
+            {"number": "18A", "name": "The Frozen River"},
+            {"number": "19A", "name": "Bitter Cold"},
+            {"number": "20A", "name": "The Liberation of Ilia"},
+            {"number": "20Ax", "name": "The Spear of Ice"},
+            {"number": "17B", "name": "The Bishop's Teachings"},
+            {"number": "18B", "name": "The Laws of Sacae"},
+            {"number": "19B", "name": "Battle in Bulgar"},
+            {"number": "20B", "name": "The Silver Wolf"},
+            {"number": "20Bx", "name": "The Bow of the Winds"},
+            {"number": 21, "name": "The Binding Blade"},
+            {"number": "21x", "name": "The Silencing Darkness"},
+            {"number": 22, "name": "The Neverending Dream"},
+            {"number": 23, "name": "The Ghost of Bern"},
+            {"number": 24, "name": "The Truth of the Legend"},
+            {"number": 25, "name": "Beyond the Darkness"}
+        ],
+        "difficultyOptions": ["Normal", "Hard"],
+        "mainLord": "Roy"
+    }
+]
 }
