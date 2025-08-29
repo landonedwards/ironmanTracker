@@ -327,16 +327,6 @@ h1 {
     font-size: 17px;
 }
 
-/* <div class="resetConfirmModal">
-      <div class="resetConfirmModalContent">
-        <p>Are you sure you want to reset your save data? Doing so will delete all recorded deaths, their details, and completed chapters.</p>
-        <div class="resetButtonsContainer">
-          <button class="resetYesButton">Yes</button>
-          <button class="resetNoButton">No</button>
-        </div>
-      </div>
-    </div> */
-
 .resetConfirmModal {
     position: fixed;
     top: 0;
@@ -637,6 +627,152 @@ textarea {
     width: 70px;
     margin: 5px 6px 0px 6px;
 }
+
+/* function generateBlazingModeOptions() {
+    let optionsHTML = "";
+
+    // go through each game mode in blazingblade.json and add its respective id, main lord, and name to a string variable
+    gameModes.forEach(mode => {
+        optionsHTML += 
+        `
+        <div class="charModeOption" data-mode-id="${mode.id}">
+          <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
+          <p>${mode.name}</p>
+        </div>
+        `;
+    })
+
+    // place that string variable in another string variable that acts as a div container (for styling purposes)
+    const containerHTML = `<div class="blazingModesContainer">${optionsHTML}</div>`;
+    main.insertAdjacentHTML("beforeend", containerHTML);
+}
+
+function generateBlazingDifficulties(selectedMode) {
+    let optionsHTML = "";
+    selectedMode.difficultyOptions.forEach(difficulty => {
+        optionsHTML += 
+        `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
+    })
+    const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
+    const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+    if (blazingOptionsModal) {
+        const blazingModesContainer = document.querySelector(".blazingModesContainer");
+        closeElement(blazingModesContainer);
+        blazingOptionsModal.insertAdjacentHTML("beforeend", containerHTML);
+    }
+}
+
+function generateGameOptionsModal(selectedGameId) {
+    let optionsHTML = "";
+
+    if (selectedGameId == "binding" || selectedGameId == "sacred") {
+        for (let i = 0; i < 3; i++) {
+            optionsHTML += `<div class="difficultyOption">${gameDetails.difficultyOptions[i]}</div>`;
+        }
+
+        const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
+        main.insertAdjacentHTML("beforeend", containerHTML);
+    }
+    else if (selectedGameId == "blazing") {
+        const modesContainer = document.querySelector(".blazingModesContainer");
+        if (!modesContainer) {
+            generateBlazingModeOptions();
+        }
+    }
+} */
+
+/*
+
+.resetConfirmModalContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+    background-color: #042e8f;
+    color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: inset 0px 0px 12px 7px rgba(0, 0, 0, 0.9);
+    font-size: 17px;
+} */
+
+/* .allSaveFilesContainer {
+    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 1000px;
+    border: 4px solid darkblue;
+}
+
+.saveFileContainer {
+    background-image: url(images/misc/bigger-display-background.jpeg);
+    width: 210px;
+    height: 60px;
+    border-radius: 10px;
+    margin: 8px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid darkblue;
+}
+
+.saveFileContainer:hover {
+    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.9);
+}
+
+.saveHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 15px;
+    width: fit-content;
+    margin-bottom: 2px;
+    background-color: #faee85;
+}
+
+.saveFileContainer h4 {
+    text-align: center;
+} */
+
+.blazingOptionsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    padding: 20px;
+}
+
+.blazingModesContainer {
+    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+.blazingModes {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+}
+
+.charModeOption {
+    background-image: url(images/misc/bigger-display-background.png);
+    margin: 5px;
+    width: 120px;
+    text-align: center;
+    border-radius: 15px;
+    padding-bottom: 5px;
+}
+
 
 /* universal footer */
 

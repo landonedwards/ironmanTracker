@@ -752,7 +752,7 @@ function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName,
     `;
 }
 
-function generateBlazingModeOptions() {
+function generateBlazingModeOptionModal() {
     let optionsHTML = "";
 
     // go through each game mode in blazingblade.json and add its respective id, main lord, and name to a string variable
@@ -760,14 +760,24 @@ function generateBlazingModeOptions() {
         optionsHTML += 
         `
         <div class="charModeOption" data-mode-id="${mode.id}">
-          <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
           <p>${mode.name}</p>
+          <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
         </div>
         `;
     })
 
     // place that string variable in another string variable that acts as a div container (for styling purposes)
-    const containerHTML = `<div class="blazingModesContainer">${optionsHTML}</div>`;
+    const containerHTML = 
+    `
+    <div class="blazingOptionsModal">
+      <div class="blazingModesContainer">
+        <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
+        <div class="blazingModes">
+          ${optionsHTML}
+        </div>
+      </div>
+    </div>
+      `;
     main.insertAdjacentHTML("beforeend", containerHTML);
 }
 
@@ -778,7 +788,12 @@ function generateBlazingDifficulties(selectedMode) {
         `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
     })
     const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
-    main.insertAdjacentHTML("beforeend", containerHTML);
+    const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+    if (blazingOptionsModal) {
+        // const blazingModesContainer = document.querySelector(".blazingModesContainer");
+        // closeElement(blazingModesContainer);
+        blazingOptionsModal.insertAdjacentHTML("beforeend", containerHTML);
+    }
 }
 
 function generateGameOptionsModal(selectedGameId) {
@@ -795,17 +810,8 @@ function generateGameOptionsModal(selectedGameId) {
     else if (selectedGameId == "blazing") {
         const modesContainer = document.querySelector(".blazingModesContainer");
         if (!modesContainer) {
-            generateBlazingModeOptions();
+            generateBlazingModeOptionModal();
         }
-
-        // FIX EVENT LISTENER.. PLACE IT SOMEWHERE ELSE. 
-        main.addEventListener("click", (event) => {
-            let selectedModeElement = event.target.closest(".charModeOption");
-            const selectedMode = gameModes.find(gameMode => gameMode.id == selectedModeElement.dataset.modeId);
-            if (selectedModeElement) {
-                generateBlazingDifficulties(selectedMode);
-            }
-        })
     }
 }
 
@@ -911,5 +917,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else if (document.body.id == "game-select-page") {
         initGameSelectPage();
+        main.addEventListener("click", (event) => {
+            let selectedModeElement = event.target.closest(".charModeOption");
+            if (selectedModeElement) {
+                const selectedMode = gameModes.find(gameMode => gameMode.id == selectedModeElement.dataset.modeId);
+                const difficultiesContainer = document.querySelector(".difficultyOptionsContainer");
+                if (!difficultiesContainer) {
+                    generateBlazingDifficulties(selectedMode);
+                }
+            }
+        })
     }
 })
