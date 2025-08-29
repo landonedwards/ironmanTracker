@@ -427,7 +427,7 @@ function closeElement(element) {
     }
 }
 
-async function initTrackerPage() {
+async function initPage() {
     // USING blazingblade.json FOR TESTING PURPOSES
     // fetch the data for the game chosen 
     const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
@@ -470,18 +470,21 @@ async function initTrackerPage() {
 
         // assign new array with correct join chapter values to global characters array
         characters = modeCharacters;
-
-        // call key functions needed for startup
-        populateChapterDropdown(currentSelectedGameMode);
         loadGameDataFromStorage();
+        return true;
+    }
+    else {
+        console.error("Failed to load game data. Page may not function correctly.");
+        return false;
+    }
+}
 
+async function initTrackerPage() {
+    const initialized = await initPage();
+    if (initialized) {
+        populateChapterDropdown(currentSelectedGameMode);
         let filteredChars = filterCharactersByChapter();
         displayCharacters(filteredChars, charContainer);
-    }
-
-    else {
-        // handle case where data can't be loaded
-        console.error("Failed to load game data. Tracker may not function correctly.");
     }
 }
 
@@ -531,50 +534,8 @@ function displayDeathDetailsModal(characterDisplayElement) {
 }
 
 async function initGraveyardPage() {
-    // USING blazingblade.json FOR TESTING PURPOSES
-    // fetch the data for the game chosen 
-    const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
-
-    if (fetchedData) {
-        // assign values to global variables based on fetched game data
-        characters = fetchedData.characters;
-        gameModes = fetchedData.gameModes;
-        const selectedModeIdFromStorage = localStorage.getItem("selectedGameMode");
-
-        // if user has selected a mode, set global variable
-        if (selectedModeIdFromStorage) {
-            currentSelectedGameMode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
-        }
-
-        // if user has not selected a mode...
-        if (!currentSelectedGameMode) {
-            // set default to Eliwood mode
-            currentSelectedGameMode = gameModes.find(mode => mode.id == 2);
-
-            // if default doesn't exist, return and stop function
-            if (!currentSelectedGameMode) {
-                console.error("Default game mode not found. Cannot initialize tracker.");
-                return;
-            }
-        }
-
-        const modeCharacters = currentSelectedGameMode.charactersInMode.map(modeChar => {
-            const baseChar = characters.find(char => char.id == modeChar.charId);
-            if (baseChar) {
-                return {
-                    // copy all properties from original character
-                    ...baseChar,
-                    // set the character's join chapter for this mode and merge it into one character array (specific to this mode)
-                    joinChapter: modeChar.joinChapter
-                };
-            }
-            return null;
-        }) // could add .filter(Boolean) to remove any nonvalid characters created 
-
-        // assign new array with correct join chapter values to global characters array
-        characters = modeCharacters;
-        loadGameDataFromStorage();
-
+    const initialized = await initPage();
+    if (initialized) {
         const deadCharacters = characters.filter(char => char.status == "deceased");
         // check if there is at least one dead character to display
         if (deadCharacters.length > 0) {
@@ -640,11 +601,6 @@ async function initGraveyardPage() {
             graveyardContainer.innerHTML = "<p class='noDeathText'>No characters have died in this playthrough.</p>";
         }
     }
-
-    else {
-        // handle case where data can't be loaded
-        console.error("Failed to load game data. Graveyard may not function correctly.");
-    }
 }
 
 // report page exclusive functions 
@@ -705,57 +661,9 @@ function displayChapterReport() {
 }
 
 async function initReportPage() {
-    // USING blazingblade.json FOR TESTING PURPOSES
-    // fetch the data for the game chosen 
-    const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
-
-    if (fetchedData) {
-        // assign values to global variables based on fetched game data
-        characters = fetchedData.characters;
-        gameModes = fetchedData.gameModes;
-        const selectedModeIdFromStorage = localStorage.getItem("selectedGameMode");
-
-        // if user has selected a mode, set global variable
-        if (selectedModeIdFromStorage) {
-            currentSelectedGameMode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
-        }
-
-        // if user has not selected a mode...
-        if (!currentSelectedGameMode) {
-            // set default to Eliwood mode
-            currentSelectedGameMode = gameModes.find(mode => mode.id == 2);
-
-            // if default doesn't exist, return and stop function
-            if (!currentSelectedGameMode) {
-                console.error("Default game mode not found. Cannot initialize tracker.");
-                return;
-            }
-        }
-
-        const modeCharacters = currentSelectedGameMode.charactersInMode.map(modeChar => {
-            const baseChar = characters.find(char => char.id == modeChar.charId);
-            if (baseChar) {
-                return {
-                    // copy all properties from original character
-                    ...baseChar,
-                    // set the character's join chapter for this mode and merge it into one character array (specific to this mode)
-                    joinChapter: modeChar.joinChapter
-                };
-            }
-            return null;
-        }) // could add .filter(Boolean) to remove any nonvalid characters created 
-
-        // assign new array with correct join chapter values to global characters array
-        characters = modeCharacters;
-
-        // call key functions needed for startup
-        loadGameDataFromStorage();
+    const initialized = await initPage();
+    if (initialized) {
         displayChapterReport();
-    }
-
-    else {
-        // handle case where data can't be loaded
-        console.error("Failed to load game data. Tracker may not function correctly.");
     }
 }
 
@@ -776,18 +684,21 @@ function gameShelfModalHTML() {
               data-game-id="binding"
               src="images/misc/fe6-cover.png"
               alt="Fire Emblem 6 Cover"
+              title="Fire Emblem: The Binding Blade"
             />
             <img
               class="gameCover"
               data-game-id="blazing"
               src="images/misc/fe7-cover.png"
               alt="Fire Emblem 7 Cover"
+              title="Fire Emblem: The Blazing Blade"
             />
             <img
               class="gameCover"
               data-game-id="sacred"
               src="images/misc/fe8-cover.png"
               alt="Fire Emblem 8 Cover"
+              title="Fire Emblem: The Sacred Stones"
             />
           </div>
         </div>
@@ -834,41 +745,56 @@ function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName,
     `;
 }
 
-// WORK IN PROGRESS. NEED TO FIX ISSUE WITH charModesContainer (is not a string literal and cannot be used with insertAdjacentHTML)
-
 function generateBlazingModeOptions() {
-    let charModesContainer = document.createElement("div");
+    let optionsHTML = "";
+
     gameModes.forEach(mode => {
-        charModesContainer.innerHTML += 
+        optionsHTML += 
         `
         <div class="charModeOption">
-          <img src="images/char-sprite/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
+          <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
           <p>${mode.name}</p>
         </div>
-        `
+        `;
     })
 
-    main.insertAdjacentHTML("beforeend", charModesContainer);
+    const containerHTML = 
+    `
+    <div class="blazingModesContainer">
+      ${optionsHTML}
+    </div>
+    `;
+
+    main.insertAdjacentHTML("beforeend", containerHTML);
 }
 
-// SAME ISSUE HERE BUT WITH difficultyContainer
-
 function generateGameOptionsModal(selectedGameId) {
-    const difficultyContainer = document.createElement("div");
+    let optionsHTML = "";
 
     if (selectedGameId == "binding" || selectedGameId == "sacred") {
         for (let i = 0; i < 3; i++) {
-            difficultyContainer += 
+            optionsHTML += 
             `
             <div class="difficultyOption">
             ${gameDetails.difficultyOptions[i]}
             </div>
-            `
+            `;
         }
-        main.insertAdjacentHTML("beforeend", difficultyContainer);
+
+        const containerHTML = 
+        `
+        <div class="difficultyOptionsContainer">
+          ${optionsHTML}
+        </div>
+        `;
+        
+        main.insertAdjacentHTML("beforeend", containerHTML);
     }
     else if (selectedGameId == "blazing") {
-        generateBlazingModeOptions();
+        const modesContainer = document.querySelector(".blazingModesContainer");
+        if (!modesContainer) {
+            generateBlazingModeOptions();
+        }
     }
 }
 
@@ -879,16 +805,17 @@ function gameOptionsModalHandler() {
             let selectedGameElement = event.target.closest(".gameCover");
             selectedGameId = selectedGameElement.dataset.gameId;
 
-            switch (selectedGameId) {
-                case "binding":
-                
-                case "blazing":
-                    
-                case "sacred":
-
-                default:
+            if (selectedGameId) {
+                generateGameOptionsModal(selectedGameId);
             }
         })
+    }
+}
+
+async function initGameSelectPage() {
+    const initialized = await initPage();
+    if (initialized) {
+
     }
 }
 
@@ -905,6 +832,7 @@ if (playButton) {
 
         if (playButton.classList.contains("selected")) {
             displayGameShelf();
+            gameOptionsModalHandler();
         }
         else {
             closeGameShelfModal();
@@ -967,5 +895,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else if (document.body.id == "report-page") {
         initReportPage();
+    }
+    else if (document.body.id == "game-select-page") {
+        initGameSelectPage();
     }
 })
