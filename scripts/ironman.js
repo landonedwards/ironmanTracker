@@ -435,7 +435,14 @@ async function initPage() {
     if (fetchedData) {
         // assign values to global variables based on fetched game data
         characters = fetchedData.characters;
-        gameModes = fetchedData.gameModes;
+        // check if game has different modes (blazing blade)
+        if (fetchedData.gameModes) {
+            gameModes = fetchedData.gameModes;
+        }
+        // else, update global gameDetails variable
+        else if (fetchedData.gameDetails) {
+            gameDetails = fetchedData.gameDetails;
+        }
         const selectedModeIdFromStorage = localStorage.getItem("selectedGameMode");
 
         // if user has selected a mode, set global variable
@@ -748,23 +755,29 @@ function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName,
 function generateBlazingModeOptions() {
     let optionsHTML = "";
 
+    // go through each game mode in blazingblade.json and add its respective id, main lord, and name to a string variable
     gameModes.forEach(mode => {
         optionsHTML += 
         `
-        <div class="charModeOption">
+        <div class="charModeOption" data-mode-id="${mode.id}">
           <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
           <p>${mode.name}</p>
         </div>
         `;
     })
 
-    const containerHTML = 
-    `
-    <div class="blazingModesContainer">
-      ${optionsHTML}
-    </div>
-    `;
+    // place that string variable in another string variable that acts as a div container (for styling purposes)
+    const containerHTML = `<div class="blazingModesContainer">${optionsHTML}</div>`;
+    main.insertAdjacentHTML("beforeend", containerHTML);
+}
 
+function generateBlazingDifficulties(selectedMode) {
+    let optionsHTML = "";
+    selectedMode.difficultyOptions.forEach(difficulty => {
+        optionsHTML += 
+        `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
+    })
+    const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
     main.insertAdjacentHTML("beforeend", containerHTML);
 }
 
@@ -773,21 +786,10 @@ function generateGameOptionsModal(selectedGameId) {
 
     if (selectedGameId == "binding" || selectedGameId == "sacred") {
         for (let i = 0; i < 3; i++) {
-            optionsHTML += 
-            `
-            <div class="difficultyOption">
-            ${gameDetails.difficultyOptions[i]}
-            </div>
-            `;
+            optionsHTML += `<div class="difficultyOption">${gameDetails.difficultyOptions[i]}</div>`;
         }
 
-        const containerHTML = 
-        `
-        <div class="difficultyOptionsContainer">
-          ${optionsHTML}
-        </div>
-        `;
-        
+        const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
         main.insertAdjacentHTML("beforeend", containerHTML);
     }
     else if (selectedGameId == "blazing") {
@@ -795,6 +797,15 @@ function generateGameOptionsModal(selectedGameId) {
         if (!modesContainer) {
             generateBlazingModeOptions();
         }
+
+        // FIX EVENT LISTENER.. PLACE IT SOMEWHERE ELSE. 
+        main.addEventListener("click", (event) => {
+            let selectedModeElement = event.target.closest(".charModeOption");
+            const selectedMode = gameModes.find(gameMode => gameMode.id == selectedModeElement.dataset.modeId);
+            if (selectedModeElement) {
+                generateBlazingDifficulties(selectedMode);
+            }
+        })
     }
 }
 
@@ -802,7 +813,9 @@ function gameOptionsModalHandler() {
     const gameShelf = document.querySelector(".shelfContainer");
     if (gameShelf) {
         gameShelf.addEventListener("click", (event) => {
+            // grab the game element that was clicked
             let selectedGameElement = event.target.closest(".gameCover");
+            // match it based on its custom game-id attribute
             selectedGameId = selectedGameElement.dataset.gameId;
 
             if (selectedGameId) {
