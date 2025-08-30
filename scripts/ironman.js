@@ -779,6 +779,9 @@ function generateBlazingModeOptionModal() {
     `
     <div class="blazingOptionsModal">
       <div class="blazingOptionsModalContent">
+        <div class="closeButtonContainer">
+          <button class="closeButton blazing">X</button>
+        </div>
         <div class="blazingModesContainer">
           <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
           <div class="blazingModes">
@@ -800,13 +803,11 @@ function generateBlazingDifficulties(selectedMode) {
     const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
     const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
     if (blazingOptionsModalContent) {
-        // const blazingModesContainer = document.querySelector(".blazingModesContainer");
-        // closeElement(blazingModesContainer);
         blazingOptionsModalContent.insertAdjacentHTML("beforeend", containerHTML);
     }
 }
 
-// add a back button and an X button in the options modal
+// ADD EVENT LISTENER TO CLOSE BUTTON
 
 function generateGameOptionsModal(selectedGameId) {
     let optionsHTML = "";
@@ -840,6 +841,20 @@ function gameOptionsModalHandler() {
                 generateGameOptionsModal(selectedGameId);
             }
         })
+    }
+}
+
+function getGameDataFile(gameId) {
+    switch (gameId) {
+        case "blazing":
+            return "fe-game-data/blazingblade.json";
+        case "binding":
+            return "fe-game-data/bindingblade.json";
+        case "sacred":
+            return "fe-game-data/sacredstones.json";
+        default:
+            console.error("Unknown game ID:", gameId);
+            return null;
     }
 }
 

@@ -760,6 +760,7 @@ function generateGameOptionsModal(selectedGameId) {
 }
 
 .difficultyOptionsContainer {
+    margin-top: 25px;
     display: flex;
     justify-content: center;
 }
@@ -770,12 +771,17 @@ function generateGameOptionsModal(selectedGameId) {
     margin: 12px 5px 5px 5px;
     border-radius: 5px;
     width: 70px;
+    height: 20px;
     text-align: center;
 }
 
 .difficultyOption:hover {
     background-color: gray;
     border: 2px solid black;
+}
+
+.closeButton.blazing {
+    margin-bottom: 10px;
 }
 
 /* universal footer */
