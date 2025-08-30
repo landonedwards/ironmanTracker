@@ -686,27 +686,33 @@ function gameShelfModalHTML() {
             alt="Wooden Shelf"
           />
           <div class="gameSelectContainer">
-            <img
-              class="gameCover"
-              data-game-id="binding"
-              src="images/misc/fe6-cover.png"
-              alt="Fire Emblem 6 Cover"
-              title="Fire Emblem: The Binding Blade"
-            />
-            <img
-              class="gameCover"
-              data-game-id="blazing"
-              src="images/misc/fe7-cover.png"
-              alt="Fire Emblem 7 Cover"
-              title="Fire Emblem: The Blazing Blade"
-            />
-            <img
-              class="gameCover"
-              data-game-id="sacred"
-              src="images/misc/fe8-cover.png"
-              alt="Fire Emblem 8 Cover"
-              title="Fire Emblem: The Sacred Stones"
-            />
+            <div class="fe6Container">
+              <img
+                class="gameCover"
+                data-game-id="binding"
+                src="images/misc/fe6-cover.png"
+                alt="Fire Emblem 6 Cover"
+                title="Fire Emblem: The Binding Blade"
+              />
+            </div>
+            <div class="fe7Container">
+              <img
+                class="gameCover"
+                data-game-id="blazing"
+                src="images/misc/fe7-cover.png"
+                alt="Fire Emblem 7 Cover"
+                title="Fire Emblem: The Blazing Blade"
+              />
+            </div>
+            <div class="sacredContainer">
+              <img
+                class="gameCover"
+                data-game-id="sacred"
+                src="images/misc/fe8-cover.png"
+                alt="Fire Emblem 8 Cover"
+                title="Fire Emblem: The Sacred Stones"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -760,7 +766,9 @@ function generateBlazingModeOptionModal() {
         optionsHTML += 
         `
         <div class="charModeOption" data-mode-id="${mode.id}">
-          <p>${mode.name}</p>
+          <div class="charModeTitle">
+            <p>${mode.name}</p>
+          </div>
           <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
         </div>
         `;
@@ -770,10 +778,12 @@ function generateBlazingModeOptionModal() {
     const containerHTML = 
     `
     <div class="blazingOptionsModal">
-      <div class="blazingModesContainer">
-        <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
-        <div class="blazingModes">
+      <div class="blazingOptionsModalContent">
+        <div class="blazingModesContainer">
+          <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
+          <div class="blazingModes">
           ${optionsHTML}
+          </div>
         </div>
       </div>
     </div>
@@ -788,13 +798,15 @@ function generateBlazingDifficulties(selectedMode) {
         `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
     })
     const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
-    const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
-    if (blazingOptionsModal) {
+    const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
+    if (blazingOptionsModalContent) {
         // const blazingModesContainer = document.querySelector(".blazingModesContainer");
         // closeElement(blazingModesContainer);
-        blazingOptionsModal.insertAdjacentHTML("beforeend", containerHTML);
+        blazingOptionsModalContent.insertAdjacentHTML("beforeend", containerHTML);
     }
 }
+
+// add a back button and an X button in the options modal
 
 function generateGameOptionsModal(selectedGameId) {
     let optionsHTML = "";

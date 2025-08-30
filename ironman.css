@@ -466,6 +466,11 @@ textarea {
     z-index: 10;
 }
 
+.gameCover:hover {
+    width: 155px;
+    border: 3px black solid;
+}
+
 .gameSelectTitle {
     padding: 25px;
 }
@@ -696,47 +701,6 @@ function generateGameOptionsModal(selectedGameId) {
     font-size: 17px;
 } */
 
-/* .allSaveFilesContainer {
-    background-image: url(images/misc/fe7-blue-menu-saves.png);
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 1000px;
-    border: 4px solid darkblue;
-}
-
-.saveFileContainer {
-    background-image: url(images/misc/bigger-display-background.jpeg);
-    width: 210px;
-    height: 60px;
-    border-radius: 10px;
-    margin: 8px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 2px solid darkblue;
-}
-
-.saveFileContainer:hover {
-    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.9);
-}
-
-.saveHeader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 15px;
-    width: fit-content;
-    margin-bottom: 2px;
-    background-color: #faee85;
-}
-
-.saveFileContainer h4 {
-    text-align: center;
-} */
-
 .blazingOptionsModal {
     position: fixed;
     top: 0;
@@ -745,22 +709,29 @@ function generateGameOptionsModal(selectedGameId) {
     right: 0;
     background: rgba(0, 0, 0, 0.75);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 10;
     padding: 20px;
 }
 
-.blazingModesContainer {
+.blazingOptionsModalContent {
+    display: flex;
+    flex-direction: column;
     background-image: url(images/misc/fe7-blue-menu-saves.png);
+    padding: 10px;
+}
+
+.blazingModesContainer {
     display: flex;
     justify-content: center;
-    padding: 10px;
 }
 
 .blazingModes {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     margin-left: 15px;
 }
 
@@ -768,11 +739,44 @@ function generateGameOptionsModal(selectedGameId) {
     background-image: url(images/misc/bigger-display-background.png);
     margin: 5px;
     width: 120px;
+    height: 87px;
     text-align: center;
     border-radius: 15px;
     padding-bottom: 5px;
 }
 
+.charModeTitle {
+    width: 100px;
+    margin-left: 9px;
+    border-radius: 15px;
+}
+
+.charModeOption p {
+    border-bottom: 1px solid black;
+}
+
+.charModeOption:hover {
+    box-shadow: inset 0 0 15px rgba(75, 48, 20, 0.8);
+}
+
+.difficultyOptionsContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.difficultyOption {
+    background-color: whitesmoke;
+    padding: 5px;
+    margin: 12px 5px 5px 5px;
+    border-radius: 5px;
+    width: 70px;
+    text-align: center;
+}
+
+.difficultyOption:hover {
+    background-color: gray;
+    border: 2px solid black;
+}
 
 /* universal footer */
 
