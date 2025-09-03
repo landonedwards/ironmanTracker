@@ -5,7 +5,11 @@ let characters;
 let gameModes;
 // for sacred stones and binding blade
 let gameDetails;
-let currentSelectedGameMode;
+let gameSelection = {
+    gameId: null,
+    mode: null,
+    selectedDifficulty: null
+};
 let currentChapter;
 let currentModalCharElement;
 
@@ -447,22 +451,22 @@ async function initPage() {
 
         // if user has selected a mode, set global variable
         if (selectedModeIdFromStorage) {
-            currentSelectedGameMode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
+            gameSelection.mode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
         }
 
         // if user has not selected a mode...
-        if (!currentSelectedGameMode) {
+        if (!gameSelection.mode) {
             // set default to Eliwood mode
-            currentSelectedGameMode = gameModes.find(mode => mode.id == 2);
+            gameSelection.mode = gameModes.find(mode => mode.id == 2);
 
             // if default doesn't exist, return and stop function
-            if (!currentSelectedGameMode) {
+            if (!gameSelection.mode) {
                 console.error("Default game mode not found. Cannot initialize tracker.");
                 return;
             }
         }
 
-        const modeCharacters = currentSelectedGameMode.charactersInMode.map(modeChar => {
+        const modeCharacters = gameSelection.mode.charactersInMode.map(modeChar => {
             const baseChar = characters.find(char => char.id == modeChar.charId);
             if (baseChar) {
                 return {
@@ -489,7 +493,7 @@ async function initPage() {
 async function initTrackerPage() {
     const initialized = await initPage();
     if (initialized) {
-        populateChapterDropdown(currentSelectedGameMode);
+        populateChapterDropdown(gameSelection.mode);
         let filteredChars = filterCharactersByChapter();
         displayCharacters(filteredChars, charContainer);
     }
@@ -616,7 +620,7 @@ function displayChapterReport() {
     chapterSummaryContainer.innerHTML = "";
     const numericCurrentChapter = getNumericChapterValue(currentChapter);
 
-    currentSelectedGameMode.chapters.forEach(chapter => {
+    gameSelection.chapters.forEach(chapter => {
         const numericChapterNumber = getNumericChapterValue(chapter.number);
 
         if (numericChapterNumber <= numericCurrentChapter) {
@@ -758,6 +762,10 @@ function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName,
     `;
 }
 
+function saveSelectedGameSettings(gameId, selectedDifficulty, gameMode = null) {
+
+}
+
 function generateBlazingModeOptionModal() {
     let optionsHTML = "";
 
@@ -792,6 +800,20 @@ function generateBlazingModeOptionModal() {
     </div>
       `;
     main.insertAdjacentHTML("beforeend", containerHTML);
+    
+    const closeButton = document.querySelector(".closeButton.blazing");
+    const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+    if (blazingOptionsModal && closeButton) {
+        closeButton.addEventListener("click", () => {
+            closeElement(blazingOptionsModal);
+        })
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key == "Escape") {
+                closeElement(blazingOptionsModal);
+            }
+        })
+    }
 }
 
 function generateBlazingDifficulties(selectedMode) {
@@ -821,8 +843,8 @@ function generateGameOptionsModal(selectedGameId) {
         main.insertAdjacentHTML("beforeend", containerHTML);
     }
     else if (selectedGameId == "blazing") {
-        const modesContainer = document.querySelector(".blazingModesContainer");
-        if (!modesContainer) {
+        const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+        if (!blazingOptionsModal) {
             generateBlazingModeOptionModal();
         }
     }
