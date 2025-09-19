@@ -400,6 +400,10 @@ textarea {
     display: none;
 }
 
+.shelfContainerContainer.hidden {
+    display: none;
+}
+
 .noteOptionsContainer {
     display: flex;
     justify-content: center;

@@ -6,6 +6,7 @@ let gameModes;
 // for sacred stones and binding blade
 let gameDetails;
 let gameSelection = {
+    id: null,
     gameId: null,
     mode: null,
     selectedDifficulty: null
@@ -28,6 +29,7 @@ const chapterSummaryContainer = document.querySelector(".chapterSummaryContainer
 
 const playButton = document.querySelector(".playButton");
 const resetButton = document.querySelector(".resetGameButton");
+const gameShelf = document.querySelector("shelfContainerContainer");
 
 let main = document.querySelector("main");
 
@@ -680,56 +682,10 @@ async function initReportPage() {
 
 // game select page exclusive functions
 
-function gameShelfModalHTML() {
-    return `
-    <div class="shelfContainerContainer">
-        <div class="shelfContainer">
-          <img
-            class="shelfImg"
-            src="images/misc/game-shelf-full.png"
-            alt="Wooden Shelf"
-          />
-          <div class="gameSelectContainer">
-            <div class="fe6Container">
-              <img
-                class="gameCover"
-                data-game-id="binding"
-                src="images/misc/fe6-cover.png"
-                alt="Fire Emblem 6 Cover"
-                title="Fire Emblem: The Binding Blade"
-              />
-            </div>
-            <div class="fe7Container">
-              <img
-                class="gameCover"
-                data-game-id="blazing"
-                src="images/misc/fe7-cover.png"
-                alt="Fire Emblem 7 Cover"
-                title="Fire Emblem: The Blazing Blade"
-              />
-            </div>
-            <div class="sacredContainer">
-              <img
-                class="gameCover"
-                data-game-id="sacred"
-                src="images/misc/fe8-cover.png"
-                alt="Fire Emblem 8 Cover"
-                title="Fire Emblem: The Sacred Stones"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-}
-
-function closeGameShelfModal() {
-    const gameShelfModal = document.querySelector(".shelfContainerContainer");
-    closeElement(gameShelfModal);
-}
-
-function displayGameShelf() {
-    main.insertAdjacentHTML("beforeend", gameShelfModalHTML());
+function toggleGameShelf() {
+    if (gameShelf) {
+        gameShelf.classList.toggle("hidden");
+    }
 }
 
 function generateSaveDataContainer() {
@@ -766,7 +722,9 @@ function saveSelectedGameSettings(gameId, selectedDifficulty, gameMode = null) {
 
 }
 
-function generateBlazingModeOptionModal() {
+
+
+function generateBlazingModeOptionsHTML() {
     let optionsHTML = "";
 
     // go through each game mode in blazingblade.json and add its respective id, main lord, and name to a string variable
@@ -793,77 +751,24 @@ function generateBlazingModeOptionModal() {
         <div class="blazingModesContainer">
           <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
           <div class="blazingModes">
-          ${optionsHTML}
+            ${optionsHTML}
           </div>
         </div>
       </div>
     </div>
       `;
-    main.insertAdjacentHTML("beforeend", containerHTML);
-    
-    const closeButton = document.querySelector(".closeButton.blazing");
-    const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
-    if (blazingOptionsModal && closeButton) {
-        closeButton.addEventListener("click", () => {
-            closeElement(blazingOptionsModal);
-        })
 
-        document.addEventListener("keydown", (event) => {
-            if (event.key == "Escape") {
-                closeElement(blazingOptionsModal);
-            }
-        })
-    }
+    return containerHTML;
 }
 
-function generateBlazingDifficulties(selectedMode) {
+function generateDifficultyOptionsHTML(gameData) {
     let optionsHTML = "";
-    selectedMode.difficultyOptions.forEach(difficulty => {
+    gameData.difficultyOptions.forEach(difficulty => {
         optionsHTML += 
         `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
     })
     const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
-    const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
-    if (blazingOptionsModalContent) {
-        blazingOptionsModalContent.insertAdjacentHTML("beforeend", containerHTML);
-    }
-}
-
-// ADD EVENT LISTENER TO CLOSE BUTTON
-
-function generateGameOptionsModal(selectedGameId) {
-    let optionsHTML = "";
-
-    if (selectedGameId == "binding" || selectedGameId == "sacred") {
-        for (let i = 0; i < 3; i++) {
-            optionsHTML += `<div class="difficultyOption">${gameDetails.difficultyOptions[i]}</div>`;
-        }
-
-        const containerHTML = `<div class="difficultyOptionsContainer">${optionsHTML}</div>`;
-        main.insertAdjacentHTML("beforeend", containerHTML);
-    }
-    else if (selectedGameId == "blazing") {
-        const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
-        if (!blazingOptionsModal) {
-            generateBlazingModeOptionModal();
-        }
-    }
-}
-
-function gameOptionsModalHandler() {
-    const gameShelf = document.querySelector(".shelfContainer");
-    if (gameShelf) {
-        gameShelf.addEventListener("click", (event) => {
-            // grab the game element that was clicked
-            let selectedGameElement = event.target.closest(".gameCover");
-            // match it based on its custom game-id attribute
-            selectedGameId = selectedGameElement.dataset.gameId;
-
-            if (selectedGameId) {
-                generateGameOptionsModal(selectedGameId);
-            }
-        })
-    }
+    return containerHTML;
 }
 
 function getGameDataFile(gameId) {
@@ -880,10 +785,78 @@ function getGameDataFile(gameId) {
     }
 }
 
+    // const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
+    // if (blazingOptionsModalContent) {
+    //     blazingOptionsModalContent.insertAdjacentHTML("beforeend", containerHTML);
+    // }
+
+    // main.insertAdjacentHTML("beforeend", containerHTML);
+    
+    // const closeButton = document.querySelector(".closeButton.blazing");
+    // const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+    // if (blazingOptionsModal && closeButton) {
+    //     closeButton.addEventListener("click", () => {
+    //         closeElement(blazingOptionsModal);
+    //     })
+
+    //     document.addEventListener("keydown", (event) => {
+    //         if (event.key == "Escape") {
+    //             closeElement(blazingOptionsModal);
+    //         }
+    //     })
+    // }
+
+    // const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
+    // if (blazingOptionsModalContent) {
+    //     blazingOptionsModalContent.insertAdjacentHTML("beforeend", containerHTML);
+    // }
+
+ // main.insertAdjacentHTML("beforeend", containerHTML);
+    
+    // const closeButton = document.querySelector(".closeButton.blazing");
+    // const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+    // if (blazingOptionsModal && closeButton) {
+    //     closeButton.addEventListener("click", () => {
+    //         closeElement(blazingOptionsModal);
+    //     })
+
+    //     document.addEventListener("keydown", (event) => {
+    //         if (event.key == "Escape") {
+    //             closeElement(blazingOptionsModal);
+    //         }
+    //     })
+    // }
+
 async function initGameSelectPage() {
+    // WORK ON THIS. PLAY BUTTON IS CURRENTLY BROKEN
     const initialized = await initPage();
     if (initialized) {
+        if (gameShelf) {
+            gameShelf.addEventListener("click", (event) => {
+                // grab the game element that was clicked
+                let selectedGameElement = event.target.closest(".gameCover");
+                // match it based on its custom game-id attribute
+                selectedGameId = selectedGameElement.dataset.gameId;
 
+                if (selectedGameId) {
+                    if (selectedGameId == "blazing") {
+                        main.insertAdjacentHTML("beforeend", generateBlazingModeOptionsHTML());
+
+                        main.addEventListener("click", (event) => {
+                            let selectedModeElement = event.target.closest(".charModeOption");
+                            if (selectedModeElement) {
+                                const selectedMode = gameModes.find(gameMode => gameMode.id == selectedModeElement.dataset.modeId);
+                                const difficultiesContainer = document.querySelector(".difficultyOptionsContainer");
+                                const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
+                                if (!difficultiesContainer) {
+                                    blazingOptionsModalContent.insertAdjacentHTML("beforeend", generateDifficultyOptionsHTML(selectedMode));
+                                }
+                            }
+                        })
+                        }
+                }
+            })
+        }
     }
 }
 
@@ -899,11 +872,10 @@ if (playButton) {
         playButton.classList.toggle("selected");
 
         if (playButton.classList.contains("selected")) {
-            displayGameShelf();
-            gameOptionsModalHandler();
+            toggleGameShelf();
         }
         else {
-            closeGameShelfModal();
+            toggleGameShelf();
         }
     })
 }
@@ -966,15 +938,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     else if (document.body.id == "game-select-page") {
         initGameSelectPage();
-        main.addEventListener("click", (event) => {
-            let selectedModeElement = event.target.closest(".charModeOption");
-            if (selectedModeElement) {
-                const selectedMode = gameModes.find(gameMode => gameMode.id == selectedModeElement.dataset.modeId);
-                const difficultiesContainer = document.querySelector(".difficultyOptionsContainer");
-                if (!difficultiesContainer) {
-                    generateBlazingDifficulties(selectedMode);
-                }
-            }
-        })
     }
 })
