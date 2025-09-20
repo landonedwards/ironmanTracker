@@ -58,6 +58,7 @@
 
     "gameDetails": [
         {"name": "Main Campaign",
+        "gameName": "The Binding Blade",
         "startChapter": 1,
         "endChapter": 25,
         "chapters": [

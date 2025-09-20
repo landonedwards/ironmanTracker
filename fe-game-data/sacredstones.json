@@ -38,6 +38,7 @@
 
     "gameDetails": [
         {"name": "Main Campaign",
+        "gameName": "The Sacred Stones",
         "startChapter": 0,
         "endChapter": 21,
         "chapters": [

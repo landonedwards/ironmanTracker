@@ -47,6 +47,7 @@
 
     "gameModes": [
         {"id": 1,
+        "gameName": "The Blazing Blade",
          "name": "Lyn's Tale",
           "startChapter": 1,
            "endChapter": 10,
@@ -83,6 +84,7 @@
             "mainLord": "Lyn"
         },
         {"id": 2,
+        "gameName": "The Blazing Blade",
          "name": "Eliwood's Tale",
           "startChapter": 11,
            "endChapter": 31,
@@ -162,6 +164,7 @@
            "mainLord": "Eliwood"
         },
         {"id": 3,
+        "gameName": "The Blazing Blade",
          "name": "Hector's Tale",
           "startChapter": 11,
            "endChapter": 33,
