@@ -439,6 +439,13 @@ function closeElement(element) {
 async function initPage() {
     // USING blazingblade.json FOR TESTING PURPOSES
     // fetch the data for the game chosen 
+    const currentPlaythrough = getCurrentPlaythrough();
+    if (currentPlaythrough) {
+        const gameFile = getGameDataFile(currentPlaythrough.id);
+        const fetchedData = await fetchGameData(gameFile);
+    }
+
+    // THIS IS WHERE I LEFT OFF. DECIDE WHAT TO DO WHEN THERE ISN'T A CURRENT PLAYTHROUGH SAVED OR CREATED
     const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
 
     if (fetchedData) {
@@ -755,9 +762,17 @@ function saveNewPlaythrough(gameId, selectedDifficulty, gameMode = null) {
     localStorage.setItem(CURRENT_PLAYTHROUGH_KEY, newPlaythrough.id);
 }
 
-function getCurrentPlaythroughId() {
+function getCurrentPlaythrough() {
     const currentPlaythroughId = localStorage.getItem(CURRENT_PLAYTHROUGH_KEY);
-    return currentPlaythroughId;
+    const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
+
+    const currentPlaythrough = existingPlaythroughs.find(playthrough => playthrough.id == currentPlaythroughId);
+    if (currentPlaythrough) {
+        return currentPlaythrough;
+    }
+    else {
+        return false;
+    }
 }
 
 function generateBlazingModeOptionsHTML() {
