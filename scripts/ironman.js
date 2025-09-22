@@ -5,14 +5,18 @@ let characters;
 let gameModes;
 // for sacred stones and binding blade
 let gameDetails;
-let gameData = {
-    id: null,
-    startDate: null,
-    gameId: null,
-    mode: null,
-    selectedDifficulty: null,
-    data: null
-};
+let currentPlaythrough = null;
+// let gameData = {
+//     id: null,
+//     startDate: null,
+//     gameId: null,
+//     gameMode: null,
+//     selectedDifficulty: null,
+//     data: {
+//         characters: null,
+//         currentChapter
+//     }
+// };
 let currentChapter;
 let currentModalCharElement;
 
@@ -31,6 +35,7 @@ const graveyardContainer = document.querySelector(".graveyardContainer");
 const chapterSummaryContainer = document.querySelector(".chapterSummaryContainer");
 
 const playButton = document.querySelector(".playButton");
+const loadButton = document.querySelector(".loadButton");
 const resetButton = document.querySelector(".resetGameButton");
 const gameShelf = document.querySelector(".shelfContainerContainer");
 
@@ -59,28 +64,10 @@ async function fetchGameData(filename) {
 }
 
 function loadGameDataFromStorage() {
-    // grab the array of characters saved in local storage
-    const savedGameDataString = localStorage.getItem(PLAYTHROUGHS_KEY);
-
-    // if there's no saved data, return (keep all characters in their initial state)
-    if (!savedGameDataString) {
-        return;
-    }
-
-    // parse the string into an object
-    const loadedGameData = JSON.parse(savedGameDataString);
-    // grab selected game mode
-    const currentSelectedModeId = localStorage.getItem("selectedGameMode");
-    // check if loaded save data matches current selected mode
-    if (loadedGameData.selectedGameModeId != currentSelectedModeId) {
-        console.log("Save data belongs to a different game mode. Starting fresh for the new mode.");
-        // don't load save data if it's for a different mode.
-        return;
-    }
     // check if there's a characters property in the loaded game data
-    if (loadedGameData.characters) {        
+    if (currentPlaythrough.data.characters) {        
         // load character state
-        loadedGameData.characters.forEach(loadedChar => {
+        currentPlaythrough.data.characters.forEach(loadedChar => {
             // find the corresponding character in the global characters array
             const existingChar = characters.find(c => c.id == loadedChar.id);
             if (existingChar) {
@@ -92,9 +79,9 @@ function loadGameDataFromStorage() {
         });
 
         // check if the current chapter property exists in loaded data
-        if (loadedGameData.currentChapter != null) {
+        if (currentPlaythrough.data.currentChapter != null) {
             // update global chapter variable
-            currentChapter = loadedGameData.currentChapter;
+            currentChapter = currentPlaythrough.data.currentChapter;
             if (chapSelect) {
                 // update dropdown to reflect the loaded chapter
                 chapSelect.value = currentChapter;
@@ -104,16 +91,19 @@ function loadGameDataFromStorage() {
 }
 
 function saveGameDataToStorage() {
-    const saveData = {
-        // the characters array 
-        characters: characters,
-        // the current chapter (global variable)
-        currentChapter: currentChapter,
-        // get the ID of the game mode selected from the game select page
-        selectedGameModeId: localStorage.getItem("selectedGameMode")
-    };
-    // saves global characters array, current chapter, and game mode ID in string format to localStorage
-    localStorage.setItem(PLAYTHROUGHS_KEY, JSON.stringify(saveData));
+    const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY)) || [];
+    const currentPlaythroughIndex = existingPlaythroughs.findIndex(p => p.id == currentPlaythrough.id);
+    if (currentPlaythroughIndex != -1) {
+        existingPlaythroughs[currentPlaythroughIndex].data.characters = characters;
+        existingPlaythroughs[currentPlaythroughIndex].data.currentChapter = currentChapter;
+    }
+    else {
+        console.error("Current playthrough data could not be found. Cannot be saved.")
+        return;
+    }
+
+    // saves global characters array and current chapter in string format to localStorage
+    localStorage.setItem(PLAYTHROUGHS_KEY, JSON.stringify(existingPlaythroughs));
 }
 
 // for use in populateChapterDropdown() to convert nonnumeric chapter values
@@ -332,7 +322,7 @@ function promptForDeathNote(character, characterDisplayElement) {
 
     saveButton.addEventListener("click", () => {
         // grab death note provided by the user
-        const deathNote = deathNoteInputBox.value.trim();
+        let deathNote = deathNoteInputBox.value.trim();
         // if user leaves it blank, provide a generic death description
         if (deathNote == "") {
             deathNote = "Died fighting for a better future.";
@@ -367,7 +357,7 @@ function gameOverModalHTML() {
     return `
     <div class="gameOverModal">
       <div class="gameOverModalContent">
-        <img src="images/misc/fe7-game-over.png alt="Game over screen">
+        <img src="images/misc/fe7-game-over.png" alt="Game over screen">
       </div>
     </div>
     `
@@ -424,7 +414,7 @@ function resetGameData() {
     if (document.body.id == "tracker-page" && charContainer) {
         // clear character container
         charContainer.innerHTML = "";
-        filteredChars = filterCharactersByChapter();
+        const filteredChars = filterCharactersByChapter();
         // reset character display 
         displayCharacters(filteredChars, charContainer);
     }
@@ -439,73 +429,87 @@ function closeElement(element) {
 async function initPage() {
     // USING blazingblade.json FOR TESTING PURPOSES
     // fetch the data for the game chosen 
-    const currentPlaythrough = getCurrentPlaythrough();
-    if (currentPlaythrough) {
-        const gameFile = getGameDataFile(currentPlaythrough.id);
-        const fetchedData = await fetchGameData(gameFile);
-    }
-
-    // THIS IS WHERE I LEFT OFF. DECIDE WHAT TO DO WHEN THERE ISN'T A CURRENT PLAYTHROUGH SAVED OR CREATED
-    const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
-
-    if (fetchedData) {
-        // assign values to global variables based on fetched game data
-        characters = fetchedData.characters;
-        // check if game has different modes (blazing blade)
-        if (fetchedData.gameModes) {
-            gameModes = fetchedData.gameModes;
-        }
-        // else, update global gameDetails variable
-        else if (fetchedData.gameDetails) {
-            gameDetails = fetchedData.gameDetails;
-        }
-        const selectedModeIdFromStorage = localStorage.getItem("selectedGameMode");
-
-        // if user has selected a mode, set global variable
-        if (selectedModeIdFromStorage) {
-            gameData.mode = gameModes.find(mode => mode.id == selectedModeIdFromStorage);
-        }
-
-        // if user has not selected a mode...
-        if (!gameData.mode) {
-            // set default to Eliwood mode
-            gameData.mode = gameModes.find(mode => mode.id == 2);
-
-            // if default doesn't exist, return and stop function
-            if (!gameData.mode) {
-                console.error("Default game mode not found. Cannot initialize tracker.");
-                return;
+    
+    // TEMPORARY FIX. JUST WANTED TO SEE IF THE EVENT LISTENERS WOULD WORK. COME BACK AND CHANGE THIS.
+    if (document.body.id == "game-select-page") {
+        const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
+        if (fetchedData) {
+            characters = fetchedData.characters;
+            if (fetchedData.gameModes) {
+                gameModes = fetchedData.gameModes;
             }
+            return true;
         }
-
-        const modeCharacters = gameData.mode.charactersInMode.map(modeChar => {
-            const baseChar = characters.find(char => char.id == modeChar.charId);
-            if (baseChar) {
-                return {
-                    // copy all properties from original character
-                    ...baseChar,
-                    // set the character's join chapter for this mode and merge it into one character array (specific to this mode)
-                    joinChapter: modeChar.joinChapter
-                };
-            }
-            return null;
-        }) // could add .filter(Boolean) to remove any nonvalid characters created 
-
-        // assign new array with correct join chapter values to global characters array
-        characters = modeCharacters;
-        loadGameDataFromStorage();
-        return true;
-    }
-    else {
-        console.error("Failed to load game data. Page may not function correctly.");
         return false;
+    }
+
+    currentPlaythrough = getCurrentPlaythrough();
+    if (currentPlaythrough) {
+        const gameFile = getGameDataFile(currentPlaythrough.gameId);
+        const fetchedData = await fetchGameData(gameFile);
+
+        if (fetchedData) {
+            // assign values to global variables based on fetched game data
+            characters = fetchedData.characters;
+            // check if game has different modes (blazing blade)
+            if (fetchedData.gameModes) {
+                gameModes = fetchedData.gameModes;
+
+                // if user has not selected a mode...
+                if (!currentPlaythrough.gameMode) {
+                    // set default to Eliwood mode
+                    currentPlaythrough.gameMode = gameModes.find(mode => mode.id == 2);
+
+                    // if default doesn't exist, return and stop function
+                    if (!currentPlaythrough.gameMode) {
+                        console.error("Default game mode not found. Cannot initialize tracker.");
+                        return;
+                    }
+                }
+
+                const modeCharacters = currentPlaythrough.gameMode.charactersInMode.map(modeChar => {
+                    const baseChar = characters.find(char => char.id == modeChar.charId);
+                    if (baseChar) {
+                        return {
+                            // copy all properties from original character
+                            ...baseChar,
+                            // set the character's join chapter for this mode and merge it into one character array (specific to this mode)
+                            joinChapter: modeChar.joinChapter
+                        };
+                    }
+                    return null;
+                }) // could add .filter(Boolean) to remove any nonvalid characters created 
+
+            // assign new array with correct join chapter values to global characters array
+            characters = modeCharacters;
+            }
+
+            // else, update global gameDetails variable
+            else if (fetchedData.gameDetails) {
+                gameDetails = fetchedData.gameDetails;
+            }
+
+            loadGameDataFromStorage();
+            return true;
+        }
+
+        else {
+            console.error("Failed to load game data. Page may not function correctly.");
+            return false;
+        }
+    }
+
+    else {
+        console.error("No save data found. Page may not function correctly. Redirecting to game select page.");
+        // redirect to game select page to allow user to choose their game and settings
+        // window.location.assign("game-select.html");
     }
 }
 
 async function initTrackerPage() {
     const initialized = await initPage();
     if (initialized) {
-        populateChapterDropdown(gameData.mode);
+        populateChapterDropdown(currentPlaythrough.gameMode);
         let filteredChars = filterCharactersByChapter();
         displayCharacters(filteredChars, charContainer);
     }
@@ -632,7 +636,7 @@ function displayChapterReport() {
     chapterSummaryContainer.innerHTML = "";
     const numericCurrentChapter = getNumericChapterValue(currentChapter);
 
-    gameData.chapters.forEach(chapter => {
+    currentPlaythrough.chapters.forEach(chapter => {
         const numericChapterNumber = getNumericChapterValue(chapter.number);
 
         if (numericChapterNumber <= numericCurrentChapter) {
@@ -698,34 +702,61 @@ function toggleGameShelf() {
     }
 }
 
-function generateSaveDataContainer() {
-    return `
-    <div class="saveFilesSpacingContainer">
-      <div class="allSaveFilesContainer"></div>
-    </div>
-    `;
+function formatDate(date) {
+    // month is 0-indexed, so add 1
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let year = date.getFullYear();
+
+    const formattedDate = `${month}/${day}/${year}`;
+    return formattedDate;
 }
 
-function generateSaveDataFileDisplay(gameMode, difficulty, deathCount, lordName, currentChapter, dateStarted) {
+// COULD ADD deathCount
+function generateSaveDataFileDisplay(gameMode, difficulty, lordName, currentChapter, dateStarted) {
     return `
     <div class="saveFileContainer">
       <div class="saveHeader">
-        <h4>${gameMode} ${difficulty}</h4>
+        <h4>${gameMode}: ${difficulty}</h4>
        </div>
       <div class="fileContentContainer">
         <div class="imgContainer">
-          <img src="images/char-sprite/small-sprites/small-${lordName.toLowerCase()}.png" alt="${lordName} Sprite">
+          <img src="images/char-sprite/fe7/small-sprites/small-${lordName.toLowerCase()}.png" alt="${lordName} Sprite">
         </div>
         <div class="fileDetailsContainer">
           <p>
             ${dateStarted}
             <br>
-            Deaths: ${deathCount} | Chapter: ${currentChapter}
+            Deaths: 5 | Chapter: ${currentChapter}
           </p>
         </div>
       </div>
     </div>
     `;
+}
+
+function generateAllPlaythroughDisplayHTML() {
+    let spacingContainer = document.createElement("div");
+    spacingContainer.classList.add("saveFilesSpacingContainer");
+
+    spacingContainer.innerHTML = `<div class="allSaveFilesContainer"></div>`;
+    let saveFilesContainer = spacingContainer.querySelector(".allSaveFilesContainer");
+    
+    const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
+    if (existingPlaythroughs) {
+        existingPlaythroughs.forEach(p => {
+            // playthrough start date is currently a string object since it was parsed
+            // a JSON file. convert it back into a date object
+            const formattedDate = formatDate(new Date(p.startDate));
+            saveFilesContainer.insertAdjacentHTML("beforeend", generateSaveDataFileDisplay(p.gameMode.name, p.selectedDifficulty, p.gameMode.mainLord, p.data.currentChapter, formattedDate));
+        })
+    }
+    else {
+        const emptySaveContainer = `<p>No existing playthroughs. Start a new one using the play button.</p>`
+        saveFilesContainer.insertAdjacentHTML("beforeend", emptySaveContainer);
+    }
+
+    return spacingContainer;
 }
 
 function generateUniqueId() {
@@ -743,8 +774,8 @@ function saveNewPlaythrough(gameId, selectedDifficulty, gameMode = null) {
         gameId: gameId,
         selectedDifficulty: selectedDifficulty,
         data: {
-            characters: characters,
-            currentChapter: currentChapter
+            characters: [],
+            currentChapter: null
         }
     }
 
@@ -766,13 +797,12 @@ function getCurrentPlaythrough() {
     const currentPlaythroughId = localStorage.getItem(CURRENT_PLAYTHROUGH_KEY);
     const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
 
+    if (!currentPlaythroughId || !existingPlaythroughs) {
+        return null;
+    }
+
     const currentPlaythrough = existingPlaythroughs.find(playthrough => playthrough.id == currentPlaythroughId);
-    if (currentPlaythrough) {
-        return currentPlaythrough;
-    }
-    else {
-        return false;
-    }
+    return currentPlaythrough;
 }
 
 function generateBlazingModeOptionsHTML() {
@@ -812,9 +842,9 @@ function generateBlazingModeOptionsHTML() {
     return containerHTML;
 }
 
-function generateDifficultyOptionsHTML(gameData) {
+function generateDifficultyOptionsHTML(currentPlaythrough) {
     let optionsHTML = "";
-    gameData.difficultyOptions.forEach(difficulty => {
+    currentPlaythrough.difficultyOptions.forEach(difficulty => {
         optionsHTML += 
         `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
     })
@@ -917,6 +947,7 @@ async function initGameSelectPage() {
                                            
                                            blazingOptionsModalContent.innerHTML = generateSettingsConfirmationModal(selectedGameName, selectedDifficultyId, selectedModeName);
                                            const settingsConfirmationContainer = document.querySelector(".settingsConfirmationContent");
+
                                            settingsConfirmationContainer.addEventListener("click", (event) => {
                                             if (event.target.id == "confirmSettingsButton") {
                                                 // create new playthrough data and save to localStorage
@@ -935,6 +966,12 @@ async function initGameSelectPage() {
                         })
                     }
                 }
+            })
+        }
+
+        if (loadButton) {
+            loadButton.addEventListener("click", () => {
+                main.insertAdjacentElement("beforeend", generateAllPlaythroughDisplayHTML());
             })
         }
     }
