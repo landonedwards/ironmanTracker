@@ -73,7 +73,8 @@
             {"number": 21, "name": "Sacred Stone"}
         ],
         "difficultyOptions": ["Easy", "Normal", "Difficult"],
-        "mainLord": "Eirika"
+        "mainLord": "Eirika",
+        "abbreviation": "fe8"
     }
     ]
 }

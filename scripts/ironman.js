@@ -82,10 +82,6 @@ function loadGameDataFromStorage() {
         if (currentPlaythrough.data.currentChapter != null) {
             // update global chapter variable
             currentChapter = currentPlaythrough.data.currentChapter;
-            if (chapSelect) {
-                // update dropdown to reflect the loaded chapter
-                chapSelect.value = currentChapter;
-            }
         }
     }
 }
@@ -132,7 +128,7 @@ function getNumericChapterValue(stringChapter) {
     return parseFloat(initialValue);
 }
 
-function populateChapterDropdown(gameMode) {
+function populateChapterDropdown(gameMode, preserveCurrentChapter = false) {
     // clear dropdown options so they don't stack and initialize base value 
     chapSelect.innerHTML = `<option value="">All</option>`;
     // populate chapter dropdown based on what mode you're playing
@@ -143,8 +139,11 @@ function populateChapterDropdown(gameMode) {
         chapSelect.append(chapterNum);
     })
 
-    chapSelect.selectedIndex = 1;
-    currentChapter = chapSelect.value;
+    // if preserveCurrentChapter is null or left out, default chapSelect to the first index and value
+    if (!preserveCurrentChapter) {
+        chapSelect.selectedIndex = 1;
+        currentChapter = chapSelect.value;
+    }
 }
 
 // filter helper function
@@ -431,17 +430,17 @@ async function initPage() {
     // fetch the data for the game chosen 
     
     // TEMPORARY FIX. JUST WANTED TO SEE IF THE EVENT LISTENERS WOULD WORK. COME BACK AND CHANGE THIS.
-    if (document.body.id == "game-select-page") {
-        const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
-        if (fetchedData) {
-            characters = fetchedData.characters;
-            if (fetchedData.gameModes) {
-                gameModes = fetchedData.gameModes;
-            }
-            return true;
-        }
-        return false;
-    }
+    // if (document.body.id == "game-select-page") {
+    //     const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
+    //     if (fetchedData) {
+    //         characters = fetchedData.characters;
+    //         if (fetchedData.gameModes) {
+    //             gameModes = fetchedData.gameModes;
+    //         }
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     currentPlaythrough = getCurrentPlaythrough();
     if (currentPlaythrough) {
@@ -509,7 +508,14 @@ async function initPage() {
 async function initTrackerPage() {
     const initialized = await initPage();
     if (initialized) {
-        populateChapterDropdown(currentPlaythrough.gameMode);
+        const hasLoadedChapter = currentChapter != null;
+        populateChapterDropdown(currentPlaythrough.gameMode, hasLoadedChapter);
+
+        // ensures chapter display reflects current chapter
+        if (hasLoadedChapter) {
+            chapSelect.value = currentChapter;
+        }
+        
         let filteredChars = filterCharactersByChapter();
         displayCharacters(filteredChars, charContainer);
     }
@@ -636,7 +642,18 @@ function displayChapterReport() {
     chapterSummaryContainer.innerHTML = "";
     const numericCurrentChapter = getNumericChapterValue(currentChapter);
 
-    currentPlaythrough.chapters.forEach(chapter => {
+    let chaptersToProcess;
+
+    // ternary alternative
+    // (gameModes != null) ? generateChapterReport(gameModes) : generateChapterReport(gameDetails);
+    if (currentPlaythrough.gameMode != null) {
+        chaptersToProcess = currentPlaythrough.gameMode.chapters;
+    }
+    else {
+        chaptersToProcess = gameDetails.chapters;
+    }
+
+    chaptersToProcess.forEach(chapter => {
         const numericChapterNumber = getNumericChapterValue(chapter.number);
 
         if (numericChapterNumber <= numericCurrentChapter) {
@@ -842,9 +859,24 @@ function generateBlazingModeOptionsHTML() {
     return containerHTML;
 }
 
-function generateDifficultyOptionsHTML(currentPlaythrough) {
+function generateGameOptionsModal(gameDetails) {
+    return `
+    <div class="blazingOptionsModal">
+      <div class="blazingOptionsModalContent">
+        <div class="closeButtonContainer">
+          <button class="closeButton blazing">X</button>
+        </div>
+        <div class="blazingModesContainer">
+          <img src="images/misc/${gameDetails.abbreviation}-cover.png" alt="${gameDetails.gameName} Cover">
+        </div>
+      </div>
+    </div>
+    `;
+}
+
+function generateDifficultyOptionsHTML(gameData) {
     let optionsHTML = "";
-    currentPlaythrough.difficultyOptions.forEach(difficulty => {
+    gameData.difficultyOptions.forEach(difficulty => {
         optionsHTML += 
         `<div class="difficultyOption" data-difficulty-id="${difficulty}">${difficulty}</div>`;
     })
@@ -902,7 +934,7 @@ async function initGameSelectPage() {
     const initialized = await initPage();
     if (initialized) {
         if (gameShelf) {
-            gameShelf.addEventListener("click", (event) => {
+            gameShelf.addEventListener("click", async (event) => {
                 // grab the game element that was clicked
                 let selectedGameElement = event.target.closest(".gameCover");
                 // match it based on its custom game-id attribute
@@ -964,6 +996,14 @@ async function initGameSelectPage() {
                                 }
                             }
                         })
+                    }
+
+                    else {
+                        const gameData = await fetchGameData(getGameDataFile(selectedGameId));
+                        if (gameData) {
+                            main.insertAdjacentHTML("beforeend", generateGameOptionsModal(gameData.gameDetails));
+                            
+                        }
                     }
                 }
             })
