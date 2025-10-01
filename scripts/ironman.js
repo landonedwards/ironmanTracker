@@ -40,7 +40,10 @@ const deleteButton = document.querySelector(".deleteButton");
 const resetButton = document.querySelector(".resetGameButton");
 const gameShelf = document.querySelector(".shelfContainerContainer");
 
+const mainNav = document.querySelector(".mainNav");
+const body = document.querySelector("body");
 let main = document.querySelector("main");
+const footer = document.querySelector("footer");
 
 
 async function fetchGameData(filename) {
@@ -208,6 +211,7 @@ function displayCharacters(characters, containerElement) {
         }
         else {
             unitDisplay.classList.add("charDisplay");
+            addGameIdClass(unitDisplay, currentPlaythrough.gameId);
         }
         // assign the id of the character object to a custom attribute on the div for future reference
         unitDisplay.dataset.charId = char.id;
@@ -426,6 +430,27 @@ function closeElement(element) {
     }
 }
 
+function addGameIdClass(element, gameId) {
+    element.classList.add(gameId);
+}
+
+function updatePageUI(gameId) {
+    // may want to define these variables in this function and not at the top
+    const elementsToUpdate = [
+        charContainer, 
+        body, 
+        mainNav,
+        footer
+    ];
+
+    elementsToUpdate.forEach(element => {
+        if (element) {
+            addGameIdClass(element, gameId);
+        }
+    })
+}
+
+
 function renderLogo(gameId) {
     const logoContainer = document.querySelector(".logoContainer");
     if (!logoContainer) {
@@ -480,7 +505,7 @@ async function initPage() {
     if (currentPlaythrough) {
         const gameFile = getGameDataFile(currentPlaythrough.gameId);
         const fetchedData = await fetchGameData(gameFile);
-        renderLogo(currentPlaythrough.gameId);
+        updatePageUI(currentPlaythrough.gameId);
 
         if (fetchedData) {
             // assign values to global variables based on fetched game data
@@ -543,6 +568,8 @@ async function initPage() {
 async function initTrackerPage() {
     const initialized = await initPage();
     if (initialized) {
+        renderLogo(currentPlaythrough.gameId);
+
         let chapters;
         if (currentPlaythrough.gameMode) {
             chapters = currentPlaythrough.gameMode;
