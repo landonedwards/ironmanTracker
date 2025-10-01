@@ -36,6 +36,7 @@ const chapterSummaryContainer = document.querySelector(".chapterSummaryContainer
 
 const playButton = document.querySelector(".playButton");
 const loadButton = document.querySelector(".loadButton");
+const deleteButton = document.querySelector(".deleteButton");
 const resetButton = document.querySelector(".resetGameButton");
 const gameShelf = document.querySelector(".shelfContainerContainer");
 
@@ -425,7 +426,40 @@ function closeElement(element) {
     }
 }
 
+function renderLogo(gameId) {
+    const logoContainer = document.querySelector(".logoContainer");
+    if (!logoContainer) {
+        console.log("No gameLogo container to insert into.")
+        return;
+    }
+
+    const logoImg = document.createElement("img");
+    logoImg.classList.add("gameLogo");
+
+    switch (gameId) {
+        case "blazing":
+            logoImg.src = "images/logo/fe7-transparent-logo.png";
+            break;
+        case "binding":
+            logoImg.src = "images/logo/fe6-transparent-logo.png";
+            break;
+        case "sacred":
+            logoImg.src = "images/logo/fe8-transparent-logo.png";
+            break;
+        default:
+            console.error("Unknown game ID:", gameId);
+            return;
+    }
+
+    logoContainer.insertAdjacentElement("beforeend", logoImg);
+}
+
 async function initPage() {
+
+    // KEEP THIS COMMENTED CODE FOR NOW UNTIL YOU COME UP WITH A SOLUTION
+
+    // EVENT LISTENERS DO NOT WORK UNLESS YOU HAVE THIS CODE OR AN EXISTING SAVE FILE
+
     // USING blazingblade.json FOR TESTING PURPOSES
     // fetch the data for the game chosen 
     
@@ -446,6 +480,7 @@ async function initPage() {
     if (currentPlaythrough) {
         const gameFile = getGameDataFile(currentPlaythrough.gameId);
         const fetchedData = await fetchGameData(gameFile);
+        renderLogo(currentPlaythrough.gameId);
 
         if (fetchedData) {
             // assign values to global variables based on fetched game data
@@ -508,8 +543,16 @@ async function initPage() {
 async function initTrackerPage() {
     const initialized = await initPage();
     if (initialized) {
+        let chapters;
+        if (currentPlaythrough.gameMode) {
+            chapters = currentPlaythrough.gameMode;
+        }
+        else {
+            chapters = gameDetails;
+        }
+
         const hasLoadedChapter = currentChapter != null;
-        populateChapterDropdown(currentPlaythrough.gameMode, hasLoadedChapter);
+        populateChapterDropdown(chapters, hasLoadedChapter);
 
         // ensures chapter display reflects current chapter
         if (hasLoadedChapter) {
@@ -730,15 +773,15 @@ function formatDate(date) {
 }
 
 // COULD ADD deathCount
-function generateSaveDataFileDisplay(gameMode, difficulty, lordName, currentChapter, dateStarted) {
+function generateSaveDataFileDisplay(id, gameCampaign, difficulty, lordName, currentChapter, dateStarted) {
     return `
-    <div class="saveFileContainer">
+    <div class="saveFileContainer" data-save-id="${id}">
       <div class="saveHeader">
-        <h4>${gameMode}: ${difficulty}</h4>
+        <h4>${gameCampaign}: ${difficulty}</h4>
        </div>
       <div class="fileContentContainer">
         <div class="imgContainer">
-          <img src="images/char-sprite/fe7/small-sprites/small-${lordName.toLowerCase()}.png" alt="${lordName} Sprite">
+          <img src="images/char-sprite/small-sprites/small-${lordName.toLowerCase()}.png" alt="${lordName} Sprite">
         </div>
         <div class="fileDetailsContainer">
           <p>
@@ -752,6 +795,7 @@ function generateSaveDataFileDisplay(gameMode, difficulty, lordName, currentChap
     `;
 }
 
+// FIX THIS (CURRENTLY USES GLOBAL gameDetails so all other games other than blazing will have same portrait)
 function generateAllPlaythroughDisplayHTML() {
     let spacingContainer = document.createElement("div");
     spacingContainer.classList.add("saveFilesSpacingContainer");
@@ -762,10 +806,21 @@ function generateAllPlaythroughDisplayHTML() {
     const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
     if (existingPlaythroughs) {
         existingPlaythroughs.forEach(p => {
+            // THINK OF NEW APPROACH
+            let campaignName;
+            let mainLord;
+            if (p.gameMode) {
+                campaignName = p.gameMode.name;
+                mainLord = p.gameMode.mainLord;
+            }
+            else {
+                campaignName = gameDetails.name;
+                mainLord = gameDetails.mainLord;
+            }
             // playthrough start date is currently a string object since it was parsed
             // a JSON file. convert it back into a date object
             const formattedDate = formatDate(new Date(p.startDate));
-            saveFilesContainer.insertAdjacentHTML("beforeend", generateSaveDataFileDisplay(p.gameMode.name, p.selectedDifficulty, p.gameMode.mainLord, p.data.currentChapter, formattedDate));
+            saveFilesContainer.insertAdjacentHTML("beforeend", generateSaveDataFileDisplay(p.id, campaignName, p.selectedDifficulty, mainLord, p.data.currentChapter, formattedDate));
         })
     }
     else {
@@ -822,6 +877,10 @@ function getCurrentPlaythrough() {
     return currentPlaythrough;
 }
 
+function setCurrentPlaythrough(playthrough) {
+    localStorage.setItem(CURRENT_PLAYTHROUGH_KEY, playthrough.id);
+}
+
 function generateBlazingModeOptionsHTML() {
     let optionsHTML = "";
 
@@ -833,7 +892,7 @@ function generateBlazingModeOptionsHTML() {
           <div class="charModeTitle">
             <p>${mode.name}</p>
           </div>
-          <img src="images/char-sprite/fe7/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
+          <img src="images/char-sprite/small-sprites/small-${mode.mainLord.toLowerCase()}.png" alt="${mode.mainLord} Sprite">
         </div>
         `;
     })
@@ -847,7 +906,7 @@ function generateBlazingModeOptionsHTML() {
           <button class="closeButton blazing">X</button>
         </div>
         <div class="blazingModesContainer">
-          <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover">
+          <img src="images/misc/fe7-cover.png" alt="Fire Emblem 7 Cover" class="optionsCover">
           <div class="blazingModes">
             ${optionsHTML}
           </div>
@@ -859,6 +918,8 @@ function generateBlazingModeOptionsHTML() {
     return containerHTML;
 }
 
+
+// NOT WORKING CORRECTLY (image not loading)
 function generateGameOptionsModal(gameDetails) {
     return `
     <div class="blazingOptionsModal">
@@ -867,7 +928,7 @@ function generateGameOptionsModal(gameDetails) {
           <button class="closeButton blazing">X</button>
         </div>
         <div class="blazingModesContainer">
-          <img src="images/misc/${gameDetails.abbreviation}-cover.png" alt="${gameDetails.gameName} Cover">
+          <img src="images/misc/${gameDetails.abbreviation}-cover.png" alt="${gameDetails.gameName} Cover" class="optionsCover">
         </div>
       </div>
     </div>
@@ -904,7 +965,7 @@ function generateSettingsConfirmationModal(gameId, selectedDifficulty, gameMode 
            <div class="settingsConfirmationContent">
              <h4>Start with these settings?</h4> 
              <p>${gameId}</p>
-             <p>${selectedDifficulty}</p>
+             <p>${selectedDifficulty} Mode</p>
              <div class="settingConfirmationButtons">
                <button id="confirmSettingsButton">Yes</button>
                <button id="rejectSettingsButton">No</button>
@@ -915,6 +976,50 @@ function generateSettingsConfirmationModal(gameId, selectedDifficulty, gameMode 
     
     return settingsConfirmationHTML;
 }
+
+function setupOptionsModalCloseHandlers() {
+    const closeButton = document.querySelector(".closeButton.blazing");
+    const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
+
+    if (blazingOptionsModal && closeButton) {
+        closeButton.addEventListener("click", () => {
+            closeElement(blazingOptionsModal);
+        })
+    }
+
+    const handleEscape = (event) => {
+        if (event.key == "Escape") {
+            const modal = document.querySelector(".blazingOptionsModal");
+            if (modal) {
+                closeElement(blazingOptionsModal);
+                // removes event listener after use so it doesn't stack
+                document.removeEventListener("keydown", handleEscape);
+            }
+        }
+    }   
+
+    document.addEventListener("keydown", handleEscape);
+}
+
+// ADD THIS TO INIT GAME SELECT PAGE AND REPLACE THE OTHER CODE (BOTH THE BLAZING AND NON BLAZING)
+
+// ALSO CHANGE THIS TO LOOK LIKE THE FUNCTION ABOVE (setupOptionsModalCloseHandlers())
+// function setupSettingsModalHandler() {
+//     const settingsConfirmationContainer = document.querySelector(".settingsConfirmationContent");
+
+//     settingsConfirmationContainer.addEventListener("click", (event) => {
+//         if (event.target.id == "confirmSettingsButton") {
+//             // create new playthrough data and save to localStorage
+//             saveNewPlaythrough(selectedGameId, selectedDifficultyId, selectedMode);
+//             // navigate to tracker page with user's selected game settings
+//             window.location.href="index.html";
+//         }
+//         else if (event.target.id == "rejectSettingsButton") {
+//             closeElement(blazingOptionsModal);
+//         }
+//     })
+
+// }
 
 function getGameDataFile(gameId) {
     switch (gameId) {
@@ -944,19 +1049,7 @@ async function initGameSelectPage() {
                     if (selectedGameId == "blazing") {
                         main.insertAdjacentHTML("beforeend", generateBlazingModeOptionsHTML());
 
-                        const closeButton = document.querySelector(".closeButton.blazing");
-                        const blazingOptionsModal = document.querySelector(".blazingOptionsModal");
-                        if (blazingOptionsModal && closeButton) {
-                            closeButton.addEventListener("click", () => {
-                                closeElement(blazingOptionsModal);
-                            })
-                        }
-
-                        document.addEventListener("keydown", (event) => {
-                            if (event.key == "Escape") {
-                                closeElement(blazingOptionsModal);
-                            }
-                        })    
+                        setupOptionsModalCloseHandlers();
 
                         main.addEventListener("click", (event) => {
                             let selectedModeElement = event.target.closest(".charModeOption");
@@ -981,7 +1074,7 @@ async function initGameSelectPage() {
                                            const settingsConfirmationContainer = document.querySelector(".settingsConfirmationContent");
 
                                            settingsConfirmationContainer.addEventListener("click", (event) => {
-                                            if (event.target.id == "confirmSettingsButton") {
+                                           if (event.target.id == "confirmSettingsButton") {
                                                 // create new playthrough data and save to localStorage
                                                 saveNewPlaythrough(selectedGameId, selectedDifficultyId, selectedMode);
                                                 // navigate to tracker page with user's selected game settings
@@ -1002,7 +1095,33 @@ async function initGameSelectPage() {
                         const gameData = await fetchGameData(getGameDataFile(selectedGameId));
                         if (gameData) {
                             main.insertAdjacentHTML("beforeend", generateGameOptionsModal(gameData.gameDetails));
-                            
+
+                            const blazingOptionsModalContent = document.querySelector(".blazingOptionsModalContent");
+                            blazingOptionsModalContent.insertAdjacentHTML("beforeend", generateDifficultyOptionsHTML(gameData.gameDetails));
+                            setupOptionsModalCloseHandlers();
+
+                            const difficultiesContainer = document.querySelector(".difficultyOptionsContainer");
+                            difficultiesContainer.addEventListener("click", (event) => {
+                                let selectedDifficultyElement = event.target.closest(".difficultyOption");
+                                const selectedDifficultyId = selectedDifficultyElement.dataset.difficultyId;
+                                const selectedGameName = gameData.gameDetails.gameName;
+
+                                blazingOptionsModalContent.innerHTML = generateSettingsConfirmationModal(selectedGameName, selectedDifficultyId);
+                                const settingsConfirmationContainer = document.querySelector(".settingsConfirmationContent");
+
+                                settingsConfirmationContainer.addEventListener("click", (event) => {
+                                    if (event.target.id == "confirmSettingsButton") {
+                                        // create new playthrough data and save to localStorage
+                                        saveNewPlaythrough(selectedGameId, selectedDifficultyId);
+                                        // navigate to tracker page with user's selected game settings
+                                        window.location.href="index.html";
+                                    }
+                                    else if (event.target.id == "rejectSettingsButton") {
+                                        closeElement(blazingOptionsModal);
+                                    }
+                                })
+                            })
+
                         }
                     }
                 }
@@ -1012,8 +1131,30 @@ async function initGameSelectPage() {
         if (loadButton) {
             loadButton.addEventListener("click", () => {
                 main.insertAdjacentElement("beforeend", generateAllPlaythroughDisplayHTML());
+
+                const allSavesContainer = document.querySelector(".allSaveFilesContainer");
+                if (allSavesContainer) {
+                    allSavesContainer.addEventListener("click", (event) => {
+                        let selectedSaveContainer = event.target.closest(".saveFileContainer");
+                        if (selectedSaveContainer) {
+                            const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
+
+                            const selectedPlaythrough = existingPlaythroughs.find(p => p.id == selectedSaveContainer.dataset.saveId);
+
+                            if (selectedPlaythrough) {
+                                setCurrentPlaythrough(selectedPlaythrough);
+                                window.location.href="index.html";
+                            }
+                        }
+                    })
+                }
             })
         }
+
+        // FINISH THIS 
+        // if (deleteButton) {
+
+        // }
     }
 }
 
@@ -1034,6 +1175,12 @@ if (playButton) {
         else {
             toggleGameShelf();
         }
+    })
+}
+
+if (deleteButton) {
+    deleteButton.addEventListener("click", () => {
+        deleteButton.classList.toggle("selected");
     })
 }
 

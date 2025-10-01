@@ -130,7 +130,7 @@ body {
     display: flex;
 }
 
-.fe7Logo {
+.gameLogo {
     margin: 0 auto;
     margin-top: 20px;
     width: 300px;
@@ -484,22 +484,17 @@ textarea {
 }
 
 /* class for when play button is selected */
-.playButton.selected {
+.playButton.selected, .playButton:hover {
     background-color: green;
     color: white;
 }
 
-.playButton:hover {
-    background-color: green;
+.loadButton:hover, .loadButton.selected {
+    background-color: blue;
     color: white;
 }
 
-.resetGameButton.selected {
-    background-color: darkred;
-    color: white;
-}
-
-.resetGameButton:hover {
+.deleteButton.selected, .deleteButton:hover {
     background-color: darkred;
     color: white;
 }
@@ -658,6 +653,10 @@ textarea {
     flex-direction: column;
     background-image: url(images/misc/fe7-blue-menu-saves.png);
     padding: 10px;
+}
+
+.blazingOptionsModalContent .optionsCover {
+    width: 316px;
 }
 
 .blazingModesContainer {

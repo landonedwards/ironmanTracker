@@ -36,8 +36,8 @@
       { "id": 34, "charName": "Syrene", "joinChapter": 17, "image": "images/char-sprite/fe8/syrene.png", "status": "alive", "deathChapter": null, "deathNote": null }
     ],
 
-    "gameDetails": [
-        {"name": "Main Campaign",
+    "gameDetails": {
+        "name": "Main Campaign",
         "gameName": "The Sacred Stones",
         "startChapter": 0,
         "endChapter": 21,
@@ -76,5 +76,4 @@
         "mainLord": "Eirika",
         "abbreviation": "fe8"
     }
-    ]
 }
