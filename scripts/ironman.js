@@ -335,7 +335,7 @@ function promptForDeathNote(character, characterDisplayElement) {
         }
     });
 
-    cancelButton.addEventListener("click", closeDeathModal)
+    cancelButton.addEventListener("click", closeDeathModal);
 }
 
 function closeDeathModal() {
@@ -554,6 +554,11 @@ async function initPage() {
             console.error("Failed to load game data. Page may not function correctly.");
             return false;
         }
+    }
+
+    // allows initialization even if there's no current playthrough (it's the game-select page)
+    else if (document.body.id == "game-select-page") {
+        return true;
     }
 
     else {
@@ -911,13 +916,15 @@ function setCurrentPlaythrough(playthrough) {
     localStorage.setItem(CURRENT_PLAYTHROUGH_KEY, playthrough.id);
 }
 
-function deletePlaythrough(existingPlaythroughs, selectedPlaythrough) {
+function deletePlaythrough(existingPlaythroughs, selectedPlaythrough, selectedSaveContainer) {
     const selectedPlaythroughIndex = existingPlaythroughs.findIndex(p => p.id == selectedPlaythrough.id);
 
     if (selectedPlaythroughIndex > -1) {
         existingPlaythroughs.splice(selectedPlaythroughIndex, 1);
         localStorage.setItem(PLAYTHROUGHS_KEY, JSON.stringify(existingPlaythroughs));
     }
+
+    selectedSaveContainer.remove();
 }
 
 function generateBlazingModeOptionsHTML() {
@@ -1192,23 +1199,7 @@ async function initGameSelectPage() {
                 const allSavesContainer = document.querySelector(".allSaveFilesContainer");
                 if (allSavesContainer) {
                     allSavesContainer.addEventListener("click", (event) => {
-                        const deleteButton = event.target.closest(".saveFileDeleteButton");
-
-                        if (deleteButton) {
-                            let selectedSaveCo = event.target.closest
-                        }
-
-                        let selectedSaveContainer = event.target.closest(".saveFileContainer");
-                        if (selectedSaveContainer) {
-                            const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
-
-                            const selectedPlaythrough = existingPlaythroughs.find(p => p.id == selectedSaveContainer.dataset.saveId);
-
-                            if (selectedPlaythrough) {
-                                setCurrentPlaythrough(selectedPlaythrough);
-                                window.location.href="index.html";
-                            }
-                        }
+                        handleSaveFileClicks(event);
                     })
                 }
             })
@@ -1219,6 +1210,29 @@ async function initGameSelectPage() {
 
         // }
     }
+}
+
+function deleteConfirmationModalHandler(existingPlaythroughs, selectedPlaythrough, selectedSaveContainer) {
+    const deleteConfirmationModal = document.querySelector(".deleteConfirmModal");
+    const yesButton = document.querySelector(".deleteYesButton");
+    const noButton = document.querySelector(".deleteNoButton");
+
+    function handleYesClick() {
+        deletePlaythrough(existingPlaythroughs, selectedPlaythrough, selectedSaveContainer);
+
+        yesButton.removeEventListener("click", handleYesClick);
+        noButton.removeEventListener("click", handleNoClick);
+        deleteConfirmationModal.remove();
+    }
+
+    function handleNoClick() {
+        yesButton.removeEventListener("click", handleYesClick);
+        noButton.removeEventListener("click", handleNoClick);
+        deleteConfirmationModal.remove();
+    }
+
+    yesButton.addEventListener("click", handleYesClick);
+    noButton.addEventListener("click", handleNoClick);
 }
 
 function handleSaveFileClicks(event) {
@@ -1238,11 +1252,9 @@ function handleSaveFileClicks(event) {
         // so it will always run without this line)
         event.stopPropagation();
 
-        // THIS IS WHERE YOU LEFT OFF
-        // insert generateDeletePlaythroughModal() and confirm they want to
-
-        // deletePlaythrough(existingPlaythroughs, selectedPlaythrough);
-        // selectedSaveContainer.remove();
+        body.insertAdjacentHTML("beforeend", generateDeletePlaythroughModal());
+        deleteConfirmationModalHandler(existingPlaythroughs, selectedPlaythrough, selectedSaveContainer);
+        return;
     }
 
     if (selectedPlaythrough) {
