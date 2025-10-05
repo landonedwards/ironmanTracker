@@ -1,11 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&family=Press+Start+2P&display=swap');
+@import "games/blazing.css";
+@import "games/binding.css";
+@import "games/sacred.css";
 
 :root {
     /* change the values below to your colors from your palette */
     --blazing-background-color: #f9efbd;
-    --binding-background-color: #f53d14;
     --blazing-secondary-color: #6a6350;
+    --binding-background-color: #e77056;
     --binding-secondary-color: darkslateblue;
+    --sacred-background-color: #ebe8d5;
+    --sacred-secondary-color: #627597;
     --accent3-color: #;
     --accent4-color: #;
     --accent5-color: #;
@@ -35,14 +40,6 @@ body {
     min-height: 729px;
 }
 
-body.blazing {
-    background-color: var(--blazing-background-color);
-}
-
-body.binding {
-    background-color: var(--binding-background-color);
-}
-
 .mainNav {
     margin: 0 auto;
     text-align: center;
@@ -50,14 +47,6 @@ body.binding {
     justify-content: end;
     list-style: none;
     padding: 5px;
-}
-
-.mainNav.blazing, footer.blazing {
-    background-color: var(--blazing-secondary-color);
-}
-
-.mainNav.binding, footer.binding {
-    background-color: var(--binding-secondary-color);
 }
 
 .mainNav li {
@@ -86,32 +75,13 @@ body.binding {
     margin-bottom: 60px;
 }
 
-.characterContainer.blazing {
-    background-image: url(images/misc/fe7-menu-background.png);
-    border: 5px solid #635939;
-}
-
-.charDisplay.blazing {
-    border: 4px solid var(--binding-secondary-color);
-}
-
-.characterContainer.binding {
-    background-image: url(images/misc/fe6-display-background.png);
-    border: 5px solid var(--binding-secondary-color);
-}
-
-.charDisplay.binding {
-    border: 4px solid var(--binding-secondary-color);
-}
-
-
 .graveyardContainer {
     display: flex;
     flex-wrap: wrap;
     width: 720px;
     margin: 0 auto;
     margin-bottom: 60px;
-    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    background-image: url(../images/misc/fe7-blue-menu-saves.png);
     border: 5px solid darkblue;
 }
 
@@ -120,7 +90,7 @@ body.binding {
     padding: 3px;
     text-align: center;
     position: relative;
-    background-image: url(images/misc/char-display-background.jpeg);
+    background-image: url(../images/misc/char-display-background.jpeg);
     background-size: contain;
     border: 4px solid #635939;
 }
@@ -536,7 +506,7 @@ textarea {
 }
 
 .allSaveFilesContainer {
-    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    background-image: url(../images/misc/fe7-blue-menu-saves.png);
     padding: 10px;
     display: flex;
     justify-content: center;
@@ -546,16 +516,17 @@ textarea {
 }
 
 .saveFileContainer {
-    background-image: url(images/misc/bigger-display-background.png);
-    width: 210px;
-    height: 60px;
+    background-image: url(../images/misc/bigger-display-background.png);
+    width: 220px;
+    height: 65px;
     border-radius: 10px;
     margin: 8px;
-    padding: 8px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     border: 3px solid darkblue;
+    position: relative;
 }
 
 .saveFileContainer:hover {
@@ -568,9 +539,24 @@ textarea {
     align-items: center;
     height: 15px;
     width: fit-content;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
     /* background-color: #faee85; */
     border-bottom: 2px solid gold;
+}
+
+.saveFileDeleteButton {
+    width: 18px;
+    background-color: white;
+    border: 1px solid red;
+    position: absolute;
+    right: 5px;
+    top: 4px;
+    z-index: 5;
+}
+
+.saveFileDeleteButton:hover {
+    width: 20px;
+    background-color: lightpink;
 }
 
 .saveFileContainer h4 {
@@ -578,8 +564,9 @@ textarea {
 }
 
 .fileContentContainer img {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
+    margin-top: 6px;
 }
 
 .imgContainer {

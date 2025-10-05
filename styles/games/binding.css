@@ -1,0 +1,17 @@
+body.binding {
+    background-color: var(--binding-background-color);
+}
+
+.mainNav.binding, footer.binding {
+    background-color: var(--binding-secondary-color);
+}
+
+.characterContainer.binding {
+    background-image: url(../../images/misc/fe6-display-background.png);
+    border: 5px solid var(--binding-secondary-color);
+}
+
+.charDisplay.binding {
+    border: 4px solid var(--binding-secondary-color);
+}
+

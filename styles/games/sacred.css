@@ -1,0 +1,16 @@
+body.sacred {
+    background-color: var(--sacred-background-color);
+}
+
+.mainNav.sacred, footer.sacred {
+    background-color: var(--sacred-secondary-color);
+}
+
+.characterContainer.sacred {
+    background-image: url(../../images/misc/fe8-display-background.png);
+    border: 5px solid var(--sacred-secondary-color);
+}
+
+.charDisplay.sacred {
+    border: 4px solid var(--sacred-secondary-color);
+}

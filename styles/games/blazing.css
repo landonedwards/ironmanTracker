@@ -1,0 +1,17 @@
+body.blazing {
+    background-color: var(--blazing-background-color);
+}
+
+.mainNav.blazing, footer.blazing {
+    background-color: var(--blazing-secondary-color);
+}
+
+.characterContainer.blazing {
+    background-image: url(../../images/misc/fe7-menu-background.png);
+    border: 5px solid var(--blazing-secondary-color);
+}
+
+.charDisplay.blazing {
+    border: 4px solid var(--blazing-secondary-color);
+}
+
