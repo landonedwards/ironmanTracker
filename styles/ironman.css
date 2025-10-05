@@ -173,7 +173,7 @@ h1 {
     width: 125px;
 }
 
-.lordReactionImg {
+.lordReactionImgBanner {
     width: 200px;
     height: 30px;
 }
@@ -328,7 +328,7 @@ h1 {
     font-size: 17px;
 }
 
-.resetConfirmModal, .deleteConfirmModal {
+.resetConfirmModal, .deleteConfirmModal, .sacredStonesRouteSplitModal {
     position: fixed;
     top: 0;
     left: 0;
@@ -342,7 +342,7 @@ h1 {
     padding: 20px;
 }
 
-.resetConfirmModalContent, .deleteConfirmModalContent {
+.resetConfirmModalContent, .deleteConfirmModalContent, .sacredStonesRouteSplitModalContent {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -669,7 +669,7 @@ textarea {
 .blazingOptionsModalContent {
     display: flex;
     flex-direction: column;
-    background-image: url(images/misc/fe7-blue-menu-saves.png);
+    background-image: url(../images/misc/fe7-blue-menu-saves.png);
     padding: 10px;
 }
 
@@ -690,7 +690,7 @@ textarea {
 }
 
 .charModeOption {
-    background-image: url(images/misc/bigger-display-background.png);
+    background-image: url(../images/misc/bigger-display-background.png);
     margin: 5px;
     width: 120px;
     height: 87px;

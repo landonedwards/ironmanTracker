@@ -18,6 +18,7 @@ let currentPlaythrough = null;
 //     }
 // };
 let currentChapter;
+let deathCount = 0;
 let currentModalCharElement;
 
 
@@ -36,7 +37,6 @@ const chapterSummaryContainer = document.querySelector(".chapterSummaryContainer
 
 const playButton = document.querySelector(".playButton");
 const loadButton = document.querySelector(".loadButton");
-const deleteButton = document.querySelector(".deleteButton");
 const resetButton = document.querySelector(".resetGameButton");
 const gameShelf = document.querySelector(".shelfContainerContainer");
 
@@ -87,6 +87,8 @@ function loadGameDataFromStorage() {
             // update global chapter variable
             currentChapter = currentPlaythrough.data.currentChapter;
         }
+
+        deathCount = currentPlaythrough.data.deathCount;
     }
 }
 
@@ -96,6 +98,7 @@ function saveGameDataToStorage() {
     if (currentPlaythroughIndex != -1) {
         existingPlaythroughs[currentPlaythroughIndex].data.characters = characters;
         existingPlaythroughs[currentPlaythroughIndex].data.currentChapter = currentChapter;
+        existingPlaythroughs[currentPlaythroughIndex].data.deathCount = deathCount;
     }
     else {
         console.error("Current playthrough data could not be found. Cannot be saved.")
@@ -239,6 +242,27 @@ function displayCharacters(characters, containerElement) {
 });
 }
 
+// THIS IS WHAT I WAS WORKING ON LAST - 10/5/2025
+function generateSacredStonesRouteSplitModal() {
+    return `
+    <div class="sacredStonesRouteSplitModal">
+      <div class="sacredStonesRouteSplitModalContent">
+        <p>What route did you choose?</p>
+        <div class="routeButtonsContainer">
+          <button class="eirikaRoute">
+            <img src="" alt="">
+            <h4>Eirika</>
+          </button>
+          <button class="ephraimRoute">
+            <img src="" alt="">
+            <h4>Ephraim</h4?
+          </button>
+        </div>
+      </div>
+    </div>
+    `
+}
+
 function generateDeathConfirmationModal(character, chapter) {
     // creates the html for a modal to confirm if the character died
     return `
@@ -349,6 +373,7 @@ function saveDeathNote(character, deathNote, characterDisplayElement) {
     character.deathChapter = currentChapter;
     character.deathNote = deathNote;
 
+    deathCount ++;
     saveGameDataToStorage();
     // update character display to show dead class styling
     characterDisplayElement.classList.add("dead");
@@ -410,6 +435,7 @@ function resetGameData() {
     currentChapter = chapSelect.options[1].value;
     // set initial chapter to the first chapter of chosen mode
     chapSelect.selectedIndex = 1;
+    deathCount = 0;
     // save reset game data to local storage (character status and current chapter)
     saveGameDataToStorage();
 
@@ -448,6 +474,48 @@ function updatePageUI(gameId) {
     })
 }
 
+const LORD_IMAGE_MAP = {
+    "roy": {
+        banner: "live-old-eliwood-banner.png",
+        reaction: "old-eliwood.png"
+    },
+    "eliwood": {
+        banner: "live-eliwood-banner.png",
+        reaction: "eliwood.png"
+    },
+    "hector": {
+        banner: "live-hector-banner.png",
+        reaction: "hector.png"
+    },
+    "lyn": {
+        banner: "live-lyn-banner.png",
+        reaction: "lyn.png"
+    },
+    "ephraim": {
+        banner: "live-ephraim-banner.png",
+        reaction: "ephraim.png"
+    },
+    "eirika": {
+        banner: "live-eirika-banner.png",
+        reaction: "eirika.png"
+    }
+}
+
+function renderLiveReaction(mainLord) {
+    const reactionBanner = document.querySelector(".lordReactionImgBanner");
+    const lordLiveReaction = document.querySelector(".lordLiveReaction");
+
+    const BASE_PATH = "images/live-reaction/";
+    const images = LORD_IMAGE_MAP[mainLord.toLowerCase()];
+
+    if (!images) {
+        console.error(`Error: Main lord ${mainLord} not found in LORD_IMAGE_MAP.`);
+        return;
+    }
+
+    reactionBanner.src = BASE_PATH + images.banner;
+    lordLiveReaction.src = BASE_PATH + images.reaction;
+}
 
 function renderLogo(gameId) {
     const logoContainer = document.querySelector(".logoContainer");
@@ -478,26 +546,6 @@ function renderLogo(gameId) {
 }
 
 async function initPage() {
-
-    // KEEP THIS COMMENTED CODE FOR NOW UNTIL YOU COME UP WITH A SOLUTION
-
-    // EVENT LISTENERS DO NOT WORK UNLESS YOU HAVE THIS CODE OR AN EXISTING SAVE FILE
-
-    // USING blazingblade.json FOR TESTING PURPOSES
-    // fetch the data for the game chosen 
-    
-    // TEMPORARY FIX. JUST WANTED TO SEE IF THE EVENT LISTENERS WOULD WORK. COME BACK AND CHANGE THIS.
-    // if (document.body.id == "game-select-page") {
-    //     const fetchedData = await fetchGameData("fe-game-data/blazingblade.json");
-    //     if (fetchedData) {
-    //         characters = fetchedData.characters;
-    //         if (fetchedData.gameModes) {
-    //             gameModes = fetchedData.gameModes;
-    //         }
-    //         return true;
-    //     }
-    //     return false;
-    // }
 
     currentPlaythrough = getCurrentPlaythrough();
     if (currentPlaythrough) {
@@ -572,6 +620,7 @@ async function initTrackerPage() {
     const initialized = await initPage();
     if (initialized) {
         renderLogo(currentPlaythrough.gameId);
+        renderLiveReaction(currentPlaythrough.mainLord);
 
         let chapters;
         if (currentPlaythrough.gameMode) {
@@ -802,8 +851,7 @@ function formatDate(date) {
     return formattedDate;
 }
 
-// COULD ADD deathCount
-function generateSaveDataFileDisplay(id, gameCampaign, difficulty, lordName, currentChapter, dateStarted) {
+function generateSaveDataFileDisplay(id, gameCampaign, difficulty, lordName, currentChapter, dateStarted, deathCount) {
     return `
     <div class="saveFileContainer" data-save-id="${id}">
       <div class="saveHeader">
@@ -818,7 +866,7 @@ function generateSaveDataFileDisplay(id, gameCampaign, difficulty, lordName, cur
           <p>
             ${dateStarted}
             <br>
-            Deaths: 5 | Chapter: ${currentChapter}
+            Deaths: ${deathCount} | Chapter: ${currentChapter}
           </p>
         </div>
       </div>
@@ -839,7 +887,7 @@ function generateAllPlaythroughDisplayHTML() {
             // playthrough start date is currently a string object since it was parsed
             // a JSON file. convert it back into a date object
             const formattedDate = formatDate(new Date(p.startDate));
-            saveFilesContainer.insertAdjacentHTML("beforeend", generateSaveDataFileDisplay(p.id, p.campaignName, p.selectedDifficulty, p.mainLord, p.data.currentChapter, formattedDate));
+            saveFilesContainer.insertAdjacentHTML("beforeend", generateSaveDataFileDisplay(p.id, p.campaignName, p.selectedDifficulty, p.mainLord, p.data.currentChapter, formattedDate, p.data.deathCount));
         })
     }
     else {
@@ -882,7 +930,8 @@ function saveNewPlaythrough(gameId, selectedDifficulty, gameMode = null) {
         mainLord : gameMode ? gameMode.mainLord : gameDetails.mainLord,
         data: {
             characters: [],
-            currentChapter: null
+            currentChapter: null,
+            deathCount: 0
         }
     }
 
@@ -964,8 +1013,6 @@ function generateBlazingModeOptionsHTML() {
     return containerHTML;
 }
 
-
-// NOT WORKING CORRECTLY (image not loading)
 function generateGameOptionsModal(gameDetails) {
     return `
     <div class="blazingOptionsModal">
@@ -1204,11 +1251,6 @@ async function initGameSelectPage() {
                 }
             })
         }
-
-        // FINISH THIS 
-        // if (deleteButton) {
-
-        // }
     }
 }
 
@@ -1281,12 +1323,6 @@ if (playButton) {
         else {
             toggleGameShelf();
         }
-    })
-}
-
-if (deleteButton) {
-    deleteButton.addEventListener("click", () => {
-        deleteButton.classList.toggle("selected");
     })
 }
 
