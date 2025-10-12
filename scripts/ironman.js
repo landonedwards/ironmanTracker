@@ -1,22 +1,27 @@
 // variable declarations 
-
 let characters;
 // for blazing blade
 let gameModes;
 // for sacred stones and binding blade
 let gameDetails;
 let currentPlaythrough = null;
-// let gameData = {
-//     id: null,
-//     startDate: null,
-//     gameId: null,
-//     gameMode: null,
-//     selectedDifficulty: null,
-//     data: {
-//         characters: null,
-//         currentChapter
+// const newPlaythrough = {
+//         id: generateUniqueId(),
+//         startDate: new Date(),
+//         gameId: gameId,
+//         selectedDifficulty: selectedDifficulty,
+//         campaignName: gameMode ? gameMode.name : gameDetails.name,
+//         mainLord : gameMode ? gameMode.mainLord : gameDetails.mainLord,
+//         data: {
+//             characters: [],
+//             currentChapter: null,
+//             deathCount: 0
+//         }
 //     }
-// };
+
+//     if (gameMode != null) {
+//         newPlaythrough.gameMode = gameMode;
+//     }
 let currentChapter;
 let deathCount = 0;
 let currentModalCharElement;
@@ -99,6 +104,9 @@ function saveGameDataToStorage() {
         existingPlaythroughs[currentPlaythroughIndex].data.characters = characters;
         existingPlaythroughs[currentPlaythroughIndex].data.currentChapter = currentChapter;
         existingPlaythroughs[currentPlaythroughIndex].data.deathCount = deathCount;
+
+        existingPlaythroughs[currentPlaythroughIndex].mainLord = currentPlaythrough.mainLord;
+        existingPlaythroughs[currentPlaythroughIndex].selectedRoute = currentPlaythrough.selectedRoute;
     }
     else {
         console.error("Current playthrough data could not be found. Cannot be saved.")
@@ -140,10 +148,13 @@ function populateChapterDropdown(gameMode, preserveCurrentChapter = false) {
     chapSelect.innerHTML = `<option value="">All</option>`;
     // populate chapter dropdown based on what mode you're playing
     gameMode.chapters.forEach(chapter => {
-        const chapterNum = document.createElement("option");
-        chapterNum.value = chapter.number;
-        chapterNum.textContent = `Chapter ${chapter.number}: ${chapter.name}`;
-        chapSelect.append(chapterNum);
+        // skips chapters with a type (route split)
+        if (!chapter.type) {
+            const chapterNum = document.createElement("option");
+            chapterNum.value = chapter.number;
+            chapterNum.textContent = `Chapter ${chapter.number}: ${chapter.name}`;
+            chapSelect.append(chapterNum);
+        }
     })
 
     // if preserveCurrentChapter is null or left out, default chapSelect to the first index and value
@@ -151,6 +162,27 @@ function populateChapterDropdown(gameMode, preserveCurrentChapter = false) {
         chapSelect.selectedIndex = 1;
         currentChapter = chapSelect.value;
     }
+}
+
+function chapterTemplate(chapterNumber, chapterName) {
+    return `
+    <option value="${chapterNumber}">Chapter ${chapterNumber} : ${chapterName}</option>
+    `;
+}
+
+function addChosenRouteChapters(routeName) {
+    const routeSplitChapters = gameDetails.chapters.find(chapter => chapter.type == "route-split");
+    const chapterBeforeSplit = routeSplitChapters.chapterBeforeSplit;
+    const chaptersToAdd = routeSplitChapters.routes[routeName];
+
+    const chapterBeforeSplitElement = chapSelect.querySelector(`option[value="${chapterBeforeSplit}"]`);
+    let chaptersHTML = "";
+
+    chaptersToAdd.forEach(chapter => {
+        chaptersHTML += chapterTemplate(chapter.number, chapter.name);
+    })
+
+    chapterBeforeSplitElement.insertAdjacentHTML("afterend", chaptersHTML);
 }
 
 // filter helper function
@@ -194,6 +226,10 @@ function updateChapter(direction) {
 
     // update current chapter selection based on whether it was the 'next' or 'prev' button
     chapSelect.selectedIndex = newChapterIndex;
+
+    // triggers change event so all logic runs
+    // SHOULD ADD chapSelect.dispatchEvent(new Event("change"));
+
     // updates the stored chapter value with the one at the new index
     currentChapter = chapSelect.options[newChapterIndex].value;
 }
@@ -242,25 +278,46 @@ function displayCharacters(characters, containerElement) {
 });
 }
 
-// THIS IS WHAT I WAS WORKING ON LAST - 10/5/2025
 function generateSacredStonesRouteSplitModal() {
     return `
     <div class="sacredStonesRouteSplitModal">
       <div class="sacredStonesRouteSplitModalContent">
         <p>What route did you choose?</p>
         <div class="routeButtonsContainer">
-          <button class="eirikaRoute">
-            <img src="" alt="">
-            <h4>Eirika</>
-          </button>
           <button class="ephraimRoute">
-            <img src="" alt="">
-            <h4>Ephraim</h4?
+            <img src="images/routes/ephraimRoute.png" alt="Ephraim Route">
+            <h4>Ephraim</h4>
+          </button>
+          <button class="eirikaRoute">
+            <img src="images/routes/eirikaRoute.png" alt="Eirika Route">
+            <h4>Eirika</h4>
           </button>
         </div>
       </div>
     </div>
-    `
+    `;
+}
+
+function sacredStonesRouteSplitModalHandler() {
+    const sacredStonesRouteSplitModal = document.querySelector(".sacredStonesRouteSplitModal");
+    const ephraimRouteButton = document.querySelector(".ephraimRoute");
+    const eirikaRouteButton = document.querySelector(".eirikaRoute");
+
+    function handleRouteSelection(routeName) {
+        addChosenRouteChapters(routeName);
+        currentPlaythrough.mainLord = routeName;
+        currentPlaythrough.selectedRoute = routeName;
+
+        renderLiveReaction(currentPlaythrough.mainLord);
+        saveGameDataToStorage();
+        
+        ephraimRouteButton.removeEventListener("click", handleRouteSelection);
+        eirikaRouteButton.removeEventListener("click", handleRouteSelection);
+        sacredStonesRouteSplitModal.remove();
+    }
+
+    ephraimRouteButton.addEventListener("click", () => handleRouteSelection("ephraim"));
+    eirikaRouteButton.addEventListener("click", () => handleRouteSelection("eirika"));
 }
 
 function generateDeathConfirmationModal(character, chapter) {
@@ -1329,6 +1386,15 @@ if (playButton) {
 // event listeners
 if (chapSelect) {
     chapSelect.addEventListener("change", () => {
+        // THIS...
+        const newChapter = chapSelect.value;
+
+        // AND THIS NEED TO BE CHANGED (JUST FOR TESTING PURPOSES)
+        if (currentPlaythrough.gameId == "sacred" && newChapter == "8.5") {
+            body.insertAdjacentHTML("beforeend", generateSacredStonesRouteSplitModal());
+            sacredStonesRouteSplitModalHandler();
+        }
+
         // update current chapter
         currentChapter = chapSelect.value;
         // Get filtered characters
@@ -1352,6 +1418,15 @@ if (prevButton) {
 if (nextButton) {
     nextButton.addEventListener("click", () => {
         updateChapter("next");
+
+        // THESE NEED TO BE REPLACED/REMOVED (FOR TESTING)
+        const newChapter = chapSelect.value;
+
+        // AND THIS NEED TO BE CHANGED (JUST FOR TESTING PURPOSES)
+        if (currentPlaythrough.gameId == "sacred" && newChapter == "8.5") {
+            body.insertAdjacentHTML("beforeend", generateSacredStonesRouteSplitModal());
+            sacredStonesRouteSplitModalHandler();
+        }
 
         const filteredChars = filterCharactersByChapter();
         displayCharacters(filteredChars, charContainer);

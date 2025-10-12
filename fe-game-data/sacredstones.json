@@ -52,8 +52,10 @@
             {"number": 6, "name": "Victims of War"},
             {"number": 7, "name": "Waterside Renvall"},
             {"number": 8, "name": "It's a Trap!"},
+            {"number": 8.5, "name": "Route Split"},
             {
                 "type" : "route-split",
+                "chapterBeforeSplit" : "8.5",
                 "routes" : {
                     "eirika" : [
                         {"number": "9E", "name": "Distant Blade"},

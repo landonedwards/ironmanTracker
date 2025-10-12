@@ -14,3 +14,23 @@ body.sacred {
 .charDisplay.sacred {
     border: 4px solid var(--sacred-secondary-color);
 }
+
+/*COME BACK AND MAKE THIS LOOK BETTER*/
+
+.routeButtonsContainer {
+    display: flex;
+    gap: 5px;
+}
+
+.ephraimRoute, .eirikaRoute {
+    width: 100px;
+    height: 150px;
+}
+
+.ephraimRoute img {
+    width: 60px;
+}
+
+.eirikaRoute img {
+    width: 40px;
+}
