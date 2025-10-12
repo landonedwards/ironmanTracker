@@ -143,6 +143,30 @@ function getNumericChapterValue(stringChapter) {
     return parseFloat(initialValue);
 }
 
+function parseRouteRecruitmentChapter(stringChapters, selectedRoute = null) {
+    // if it's already a number, return it
+    if (typeof stringChapters == "number") {
+        return stringChapters;
+    }
+    
+    // if it doesn't contain a slash, it's just a chapter string
+    if (!stringChapters.includes("/")) {
+        return getNumericChapterValue(stringChapters);
+    }
+
+    // creates array of [eirika join chapter, ephraim join chapter]
+    // also trims whitespace (currently formatted as "10 / 12")
+    const routeRecruitmentChapters = stringChapters.split("/").map(ch => ch.trim());
+
+    if (selectedRoute == "ephraim") {
+        return getNumericChapterValue(routeRecruitmentChapters[1]);
+    }
+    // if it's not ephraim's route, default to eirika's
+    else {
+        return getNumericChapterValue(routeRecruitmentChapters[0]);
+    }
+}
+
 function populateChapterDropdown(gameMode, preserveCurrentChapter = false) {
     // clear dropdown options so they don't stack and initialize base value 
     chapSelect.innerHTML = `<option value="">All</option>`;
@@ -189,7 +213,9 @@ function addChosenRouteChapters(routeName) {
 function filterJoinChapter(character) {
     // convert all chapter values (gaiden chapters are initially strings) to numbers for comparison between join chapter and selected chapter
     const selectedChapter = getNumericChapterValue(chapSelect.value);
-    return character.joinChapter <= selectedChapter;
+    const characterJoinChapter = parseRouteRecruitmentChapter(character.joinChapter, currentPlaythrough.selectedRoute);
+
+    return characterJoinChapter <= selectedChapter;
 }
 
 function filterCharactersByChapter() {
@@ -690,6 +716,10 @@ async function initTrackerPage() {
         const hasLoadedChapter = currentChapter != null;
         populateChapterDropdown(chapters, hasLoadedChapter);
 
+        if (currentPlaythrough.selectedRoute) {
+            addChosenRouteChapters(currentPlaythrough.selectedRoute);
+        }
+
         // ensures chapter display reflects current chapter
         if (hasLoadedChapter) {
             chapSelect.value = currentChapter;
@@ -819,7 +849,7 @@ async function initGraveyardPage() {
 
 function displayChapterReport() {
     chapterSummaryContainer.innerHTML = "";
-    const numericCurrentChapter = getNumericChapterValue(currentChapter);
+    const numericCurrentChapter = parseRouteRecruitmentChapter(currentChapter, currentPlaythrough.selectedRoute);
 
     let chaptersToProcess;
 
@@ -832,7 +862,21 @@ function displayChapterReport() {
         chaptersToProcess = gameDetails.chapters;
     }
 
+    // flatten the chapters array to include route-specific chapters (those are nested more deeply than regular chapters)
+    let flattenedChapters = [];
     chaptersToProcess.forEach(chapter => {
+        if (chapter.type == "route-split") {
+            if (currentPlaythrough.selectedRoute) {
+                flattenedChapters.push(...chapter.routes[currentPlaythrough.selectedRoute]);
+            }
+        }
+        // regular chapters
+        else {
+            flattenedChapters.push(chapter);
+        }
+    })
+
+    flattenedChapters.forEach(chapter => {
         const numericChapterNumber = getNumericChapterValue(chapter.number);
 
         if (numericChapterNumber <= numericCurrentChapter) {
@@ -1389,6 +1433,7 @@ if (chapSelect) {
         // THIS...
         const newChapter = chapSelect.value;
 
+        // MAYBE ADD ANOTHER CONDITION TO THIS TO PREVENT ROUTE SPLIT CHAPTERS FROM STACKING 
         // AND THIS NEED TO BE CHANGED (JUST FOR TESTING PURPOSES)
         if (currentPlaythrough.gameId == "sacred" && newChapter == "8.5") {
             body.insertAdjacentHTML("beforeend", generateSacredStonesRouteSplitModal());
