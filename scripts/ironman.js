@@ -1,3 +1,5 @@
+import { PLAYTHROUGHS_KEY, CURRENT_PLAYTHROUGH_KEY, LORD_IMAGE_MAP } from "./constants.js";
+
 // variable declarations 
 let characters;
 // for blazing blade
@@ -25,11 +27,6 @@ let currentPlaythrough = null;
 let currentChapter;
 let deathCount = 0;
 let currentModalCharElement;
-
-
-// key for storing dead characters in localStorage
-const PLAYTHROUGHS_KEY = "fireEmblemIronmanSaves";
-const CURRENT_PLAYTHROUGH_KEY = "currentIronmanSave";
 
 const charContainer = document.querySelector(".characterContainer");
 const chapSelect = document.querySelector("#chapSelect");
@@ -555,33 +552,6 @@ function updatePageUI(gameId) {
             addGameIdClass(element, gameId);
         }
     })
-}
-
-const LORD_IMAGE_MAP = {
-    "roy": {
-        banner: "live-old-eliwood-banner.png",
-        reaction: "old-eliwood.png"
-    },
-    "eliwood": {
-        banner: "live-eliwood-banner.png",
-        reaction: "eliwood.png"
-    },
-    "hector": {
-        banner: "live-hector-banner.png",
-        reaction: "hector.png"
-    },
-    "lyn": {
-        banner: "live-lyn-banner.png",
-        reaction: "lyn.png"
-    },
-    "ephraim": {
-        banner: "live-ephraim-banner.png",
-        reaction: "ephraim.png"
-    },
-    "eirika": {
-        banner: "live-eirika-banner.png",
-        reaction: "eirika.png"
-    }
 }
 
 function renderLiveReaction(mainLord) {

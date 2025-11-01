@@ -99,7 +99,7 @@
             {"number": 15, "name": "The Dragon Girl"},
             {"number": 16, "name": "Retaking the Capital"},
             {"number": "16x", "name": "The Pinnacle of Light"},
-            {"number": 16.75, "name": "Route Split 1"},
+            {"number": 16.75, "name": "Route Split 2"},
             {
                 "type" : "route-split",
                 "chapterBeforeSplit" : "16.75",
@@ -120,16 +120,6 @@
                     ]
                 }
             },
-            {"number": "17A", "name": "The Path Through the Ocean"},
-            {"number": "18A", "name": "The Frozen River"},
-            {"number": "19A", "name": "Bitter Cold"},
-            {"number": "20A", "name": "The Liberation of Ilia"},
-            {"number": "20Ax", "name": "The Spear of Ice"},
-            {"number": "17B", "name": "The Bishop's Teachings"},
-            {"number": "18B", "name": "The Laws of Sacae"},
-            {"number": "19B", "name": "Battle in Bulgar"},
-            {"number": "20B", "name": "The Silver Wolf"},
-            {"number": "20Bx", "name": "The Bow of the Winds"},
             {"number": 21, "name": "The Binding Blade"},
             {"number": "21x", "name": "The Silencing Darkness"},
             {"number": 22, "name": "The Neverending Dream"},
