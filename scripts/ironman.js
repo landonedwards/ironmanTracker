@@ -590,6 +590,9 @@ function renderLogo(gameId) {
         case "sacred":
             logoImg.src = "images/logo/fe8-transparent-logo.png";
             break;
+        case "radiance":
+            logoImg.src = "images/logo/fe9-transparent-logo.png";
+            break;
         default:
             console.error("Unknown game ID:", gameId);
             return;
@@ -1193,6 +1196,8 @@ function getGameDataFile(gameId) {
             return "fe-game-data/bindingblade.json";
         case "sacred":
             return "fe-game-data/sacredstones.json";
+        case "radiance":
+            return "fe-game-data/pathofradiance.json";
         default:
             console.error("Unknown game ID:", gameId);
             return null;
