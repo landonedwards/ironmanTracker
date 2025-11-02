@@ -1,0 +1,22 @@
+body.radiance {
+    background-color: #f2e5cc;
+}
+
+.mainNav.radiance, footer.radiance {
+    background-color: #3c3022;
+}
+
+.characterContainer.radiance {
+    background-image: url(../../images/misc/fe9-display-background.png);
+    border: 5px solid #3c3022;
+    width: 900px;
+}
+
+.charDisplay.radiance {
+    border: 4px solid #3c3022;
+    background-image: url(../../images/misc/fe9-char-display.png);
+}
+
+.charDisplay.radiance img {
+    width: 125px;
+}

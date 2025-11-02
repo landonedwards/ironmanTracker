@@ -2,6 +2,7 @@
 @import "games/blazing.css";
 @import "games/binding.css";
 @import "games/sacred.css";
+@import "games/radiance.css";
 
 :root {
     /* change the values below to your colors from your palette */
@@ -11,6 +12,8 @@
     --binding-secondary-color: darkslateblue;
     --sacred-background-color: #ebe8d5;
     --sacred-secondary-color: #627597;
+    --radiance-background-color: #ebe8d5;
+    --radiance-secondary-color: #627597;
     --accent3-color: #;
     --accent4-color: #;
     --accent5-color: #;
