@@ -191,10 +191,38 @@ function chapterTemplate(chapterNumber, chapterName) {
     `;
 }
 
+function removeRouteChapters() {
+    const routeSplitChapters = gameDetails.chapters.find(chapter => chapter.type == "route-split");
+    // Object.value() gets all route arrays: [[eirika chapters], [ephraim chapters], etc.]
+    // .flat() flattens them into one array
+    const allRouteChapters = Object.values(routeSplitChapters.routes).flat();
+
+    allRouteChapters.forEach(chapter => {
+        const optionToRemove = chapSelect.querySelector(`option[value="${chapter.number}"]`);
+
+        if (optionToRemove) {
+            optionToRemove.remove();
+        }
+    })
+}
+
+function chapterAlreadyAdded(chapter) {
+    return Array.from(chapSelect.options).some(option => option.value == chapter.number);
+}
+
 function addChosenRouteChapters(routeName) {
+    // removes existing route chapters first
+    removeRouteChapters();
+
     const routeSplitChapters = gameDetails.chapters.find(chapter => chapter.type == "route-split");
     const chapterBeforeSplit = routeSplitChapters.chapterBeforeSplit;
     const chaptersToAdd = routeSplitChapters.routes[routeName];
+
+    // checks first chapter in the route split. if it exists, assumes all route chapters have been added 
+    if (chapterAlreadyAdded(chaptersToAdd[0])) {
+        // route chapters have already been added
+        return;
+    }
 
     const chapterBeforeSplitElement = chapSelect.querySelector(`option[value="${chapterBeforeSplit}"]`);
     let chaptersHTML = "";
@@ -454,9 +482,16 @@ function saveDeathNote(character, deathNote, characterDisplayElement) {
     character.deathNote = deathNote;
 
     deathCount ++;
-    saveGameDataToStorage();
+    
     // update character display to show dead class styling
     characterDisplayElement.classList.add("dead");
+    
+    // show lord's reaction to the death
+    updateLordReaction(currentPlaythrough.mainLord);
+
+    // save after all updates are complete
+    saveGameDataToStorage();
+
     closeDeathModal();
 }
 
@@ -554,11 +589,7 @@ function updatePageUI(gameId) {
     })
 }
 
-function renderLiveReaction(mainLord) {
-    const reactionBanner = document.querySelector(".lordReactionImgBanner");
-    const lordLiveReaction = document.querySelector(".lordLiveReaction");
-
-    const BASE_PATH = "images/live-reaction/";
+function getLordImages(mainLord) {
     const images = LORD_IMAGE_MAP[mainLord.toLowerCase()];
 
     if (!images) {
@@ -566,8 +597,33 @@ function renderLiveReaction(mainLord) {
         return;
     }
 
-    reactionBanner.src = BASE_PATH + images.banner;
-    lordLiveReaction.src = BASE_PATH + images.reaction;
+    const BASE_PATH = "images/live-reaction/";
+    return {
+        banner: BASE_PATH + images.banner,
+        reaction: BASE_PATH + images.reaction,
+        deathReact: BASE_PATH + images.deathReact
+    }
+}
+
+function renderLiveReaction(mainLord) {
+    const reactionBanner = document.querySelector(".lordReactionImgBanner");
+    const lordLiveReaction = document.querySelector(".lordLiveReaction");
+
+    const images = getLordImages(mainLord);
+
+    reactionBanner.src = images.banner;
+    lordLiveReaction.src = images.reaction;
+}
+
+function updateLordReaction(mainLord) {
+    const lordLiveReaction = document.querySelector(".lordLiveReaction");
+    const images = getLordImages(mainLord);
+
+    lordLiveReaction.src = images.deathReact;
+
+    setTimeout(() => {
+        lordLiveReaction.src = images.reaction;
+    }, 5000);
 }
 
 function renderLogo(gameId) {
