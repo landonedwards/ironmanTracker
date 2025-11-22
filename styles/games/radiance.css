@@ -12,11 +12,11 @@ body.radiance {
     width: 900px;
 }
 
-.charDisplay.radiance {
+.charDisplay.radiance, .graveDisplay.radiance {
     border: 4px solid #3c3022;
     background-image: url(../../images/misc/fe9-char-display.png);
 }
 
-.charDisplay.radiance img {
+.charDisplay.radiance img, .graveDisplay.radiance img {
     width: 125px;
 }

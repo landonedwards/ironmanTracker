@@ -20,7 +20,6 @@ let currentPlaythrough = null;
 //             deathCount: 0
 //         }
 //     }
-
 //     if (gameMode != null) {
 //         newPlaythrough.gameMode = gameMode;
 //     }
@@ -301,8 +300,9 @@ function displayCharacters(characters, containerElement) {
         }
         else {
             unitDisplay.classList.add("charDisplay");
-            addGameIdClass(unitDisplay, currentPlaythrough.gameId);
         }
+        
+        addGameIdClass(unitDisplay, currentPlaythrough.gameId);
         // assign the id of the character object to a custom attribute on the div for future reference
         unitDisplay.dataset.charId = char.id;
 
@@ -327,6 +327,25 @@ function displayCharacters(characters, containerElement) {
         displayContainer.append(unitDisplay);
         containerElement.append(displayContainer);
 });
+}
+
+function findRouteSplitForChapter(currentChapter) {
+    if (!gameDetails) {
+        return null;
+    }
+
+    return gameDetails.chapters.find(chapter => 
+        chapter.type == "route-split" && chapter.chapterBeforeSplit == currentChapter);
+}
+
+// WORKING ON THIS LAST - 11/9/2025
+function generateRouteSplitModal(routeSplitData) {
+    const routeNames = Object.keys(routeSplitData.routes);
+
+    let routeButtonsHTML = "";
+    routeNames.forEach(routeName => {
+        const displayName = routeName.charAt(0).toUpperCase() + routeName.slice(1);
+    })
 }
 
 function generateSacredStonesRouteSplitModal() {
