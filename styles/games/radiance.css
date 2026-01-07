@@ -24,3 +24,9 @@ body.radiance {
 .charDisplay.radiance img, .graveDisplay.radiance img {
     width: 125px;
 }
+
+.charDisplay.radiance.dead .redXIcon{
+    width: 140px;
+    bottom: -8px;
+    right: -5px;
+}
