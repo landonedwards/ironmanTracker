@@ -596,6 +596,7 @@ function updatePageUI(gameId) {
     // may want to define these variables in this function and not at the top
     const elementsToUpdate = [
         charContainer, 
+        graveyardContainer,
         body, 
         mainNav,
         footer
