@@ -557,6 +557,20 @@ textarea {
     z-index: 5;
 }
 
+.downloadSaveFileButton {
+    width: 18px;
+    background-color: white;
+    border: 1px solid black;
+    position: absolute;
+    right: 5px;
+    top: 27px;
+    z-index: 5;
+
+    &:hover {
+        width: 20px;
+    }
+}
+
 .saveFileDeleteButton:hover {
     width: 20px;
     background-color: lightpink;

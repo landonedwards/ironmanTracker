@@ -1,4 +1,5 @@
 import { PLAYTHROUGHS_KEY, CURRENT_PLAYTHROUGH_KEY, LORD_IMAGE_MAP } from "./constants.js";
+import { createSaveJSON } from "./json.js";
 
 // variable declarations 
 let characters;
@@ -338,14 +339,33 @@ function findRouteSplitForChapter(currentChapter) {
         chapter.type == "route-split" && chapter.chapterBeforeSplit == currentChapter);
 }
 
-// WORKING ON THIS LAST - 11/9/2025
+// WORKING ON THIS LAST - 1/7/2026
 function generateRouteSplitModal(routeSplitData) {
     const routeNames = Object.keys(routeSplitData.routes);
 
     let routeButtonsHTML = "";
     routeNames.forEach(routeName => {
         const displayName = routeName.charAt(0).toUpperCase() + routeName.slice(1);
+        const imageSrc = `images/routes/${displayName}.png`;
+
+        routeButtonsHTML += `
+        <button class="${routeName}Route">
+          <img src="${imageSrc}" alt="${displayName} Route">
+          <h4>${displayName}</h4>
+        </button>
+        `;
     })
+
+    // look below at the sacredStonesRouteSplitModal() for guidance
+    return `<div class="routeSplitModal">
+      <div class="routeSplitModalContent">
+        <p>What route did you choose?</p>
+        <div class="routeButtonsContainer">
+          
+          </button>
+        </div>
+      </div>
+    </div>`;
 }
 
 function generateSacredStonesRouteSplitModal() {
@@ -1006,6 +1026,7 @@ function generateSaveDataFileDisplay(id, gameCampaign, difficulty, lordName, cur
     <div class="saveFileContainer" data-save-id="${id}">
       <div class="saveHeader">
         <h4>${gameCampaign}: ${difficulty}</h4>
+        <img src="images/misc/downloadIcon.png" alt="Download playthrough data" class="downloadSaveFileButton">
         <img src="images/misc/redX.png" alt="Delete save file" class="saveFileDeleteButton">
        </div>
       <div class="fileContentContainer">
@@ -1431,6 +1452,7 @@ function deleteConfirmationModalHandler(existingPlaythroughs, selectedPlaythroug
 
 function handleSaveFileClicks(event) {
     const deleteButton = event.target.closest(".saveFileDeleteButton");
+    const downloadButton = event.target.closest(".downloadSaveFileButton");
     const selectedSaveContainer = event.target.closest(".saveFileContainer");
 
     const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY));
@@ -1448,6 +1470,13 @@ function handleSaveFileClicks(event) {
 
         body.insertAdjacentHTML("beforeend", generateDeletePlaythroughModal());
         deleteConfirmationModalHandler(existingPlaythroughs, selectedPlaythrough, selectedSaveContainer);
+        return;
+    }
+
+    if (downloadButton) {
+        event.stopPropagation();
+        // download playthrough data in a JSON file
+        createSaveJSON(currentPlaythrough);
         return;
     }
 
