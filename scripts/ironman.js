@@ -689,6 +689,9 @@ function renderLogo(gameId) {
         case "radiance":
             logoImg.src = "images/logo/fe9-transparent-logo.png";
             break;
+        case "conquest":
+            logoImg.src = "images/logo/conquest-transparent-logo.png";
+            break;
         default:
             console.error("Unknown game ID:", gameId);
             return;

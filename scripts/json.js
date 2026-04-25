@@ -1,5 +1,5 @@
-import { PLAYTHROUGHS_KEY } from "./constants";
-import { fetchGameData } from "./ironman";
+import { PLAYTHROUGHS_KEY } from "./constants.js";
+import { fetchGameData } from "./ironman.js";
 
 function isolateDate(dateString) {
     // format is "2025-10-12T04:38..".

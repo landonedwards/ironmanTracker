@@ -38,6 +38,11 @@ export const LORD_IMAGE_MAP = {
         banner: "live-ike-banner.png",
         reaction: "ike.png",
         deathReact: "angry-ike.png"
+    },
+    "corrin": {
+        banner: "",
+        reaction: "garon.png",
+        deathReact: "garon-grinning.png"
     }
 }
 
