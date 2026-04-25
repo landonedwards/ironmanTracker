@@ -3,6 +3,7 @@
 @import "games/binding.css";
 @import "games/sacred.css";
 @import "games/radiance.css";
+@import "games/conquest.css";
 
 :root {
     /* change the values below to your colors from your palette */

@@ -1,0 +1,49 @@
+/* WORK IN PROGRESS */
+
+body.conquest {
+    background-color: #2b0047;
+}
+
+.mainNav.conquest, footer.conquest {
+    background-color: #483755;
+}
+
+.mainNav.conquest li a:hover, #prevButton:hover, #nextButton:hover {
+    background-color: #977daa;
+    color: black;
+}
+
+.h1Container h1 {
+    color: #b59ac9;
+}
+
+.chapterDropdown {
+    color: white;
+}
+
+.characterContainer.conquest {
+    background-image: url(../../images/misc/fe9-display-background.png);
+    border: 5px solid #3c3022;
+    width: 900px;
+}
+
+.graveyardContainer.conquest {
+    width: 900px;
+}
+
+.charDisplay.conquest, .graveDisplay.conquest {
+    border: 4px solid #3c3022;
+    background-image: url(../../images/misc/fe9-char-display.png);
+    width: 145px;
+    overflow: hidden;
+}
+
+.charDisplay.conquest img, .graveDisplay.conquest img {
+    max-height: 155px;
+}
+
+.charDisplay.radiance.dead .redXIcon{
+    width: 140px;
+    bottom: -8px;
+    right: -5px;
+}
