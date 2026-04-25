@@ -48,7 +48,7 @@ let main = document.querySelector("main");
 const footer = document.querySelector("footer");
 
 
-async function fetchGameData(filename) {
+export async function fetchGameData(filename) {
     try {
         // await fetch call to get the response object
         const response = await fetch(filename);
@@ -1295,6 +1295,8 @@ function getGameDataFile(gameId) {
             return "fe-game-data/sacredstones.json";
         case "radiance":
             return "fe-game-data/pathofradiance.json";
+        case "conquest":
+            return "fe-game-data/conquest.json";
         default:
             console.error("Unknown game ID:", gameId);
             return null;

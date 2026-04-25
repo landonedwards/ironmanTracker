@@ -1,3 +1,5 @@
+import { PLAYTHROUGHS_KEY } from "./constants";
+import { fetchGameData } from "./ironman";
 
 function isolateDate(dateString) {
     // format is "2025-10-12T04:38..".
@@ -19,4 +21,14 @@ export function createSaveJSON(playthroughData)
     link.click();
 
     URL.revokeObjectURL(url);
+}
+
+export async function loadSaveJSON(saveFile) {
+    // parse JSON data from file and store it in saveData
+    const saveData = await fetchGameData(saveFile);
+    // grab existing playthrough data in localStorage
+    const existingPlaythroughs = JSON.parse(localStorage.getItem(PLAYTHROUGHS_KEY)) || [];
+    existingPlaythroughs.push(saveData);
+    // update data in localStorage with new playthrough added to the end
+    localStorage.setItem(PLAYTHROUGHS_KEY, JSON.stringify(existingPlaythroughs));
 }
